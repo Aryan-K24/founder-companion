@@ -28,8 +28,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-accent-foreground focus:shadow-lg"
+        >
+          Skip to main content
+        </a>
         <Navbar />
-        <main className="min-h-[calc(100dvh-3.5rem)]">{children}</main>
+        <main id="main-content" className="min-h-[calc(100dvh-3.5rem)]">{children}</main>
       </body>
     </html>
   );

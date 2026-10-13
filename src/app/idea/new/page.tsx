@@ -1,23 +1,18 @@
 import Container from "@/components/layout/Container";
 import PageHeader from "@/components/layout/PageHeader";
+import NewIdeaForm from "@/components/intake/NewIdeaForm";
 
 export default function NewIdeaPage() {
   return (
-    <Container>
+    <Container className="py-10">
       <PageHeader
-        eyebrow="New idea"
-        title="Let's start shaping it"
-        description="This is where you'll begin a new startup idea or vision. In a later phase, this page will kick off the structured founder interview and create a workspace for you."
+        eyebrow="Startup Intake"
+        title="Stress-Test Your Startup Concept"
+        description="Submit your solution or problem hypothesis. Founder Companion searches active players, scours the failure graveyard, and returns a ruthless viability verdict."
       />
 
-      <div className="my-10 rounded-xl border border-dashed border-border bg-surface p-10 text-center">
-        <p className="font-display text-lg font-semibold tracking-tight text-foreground">
-          Idea intake coming soon
-        </p>
-        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted">
-          The intake form, interview flow, and idea creation logic aren&apos;t
-          built yet — this route is a placeholder reserved for that work.
-        </p>
+      <div className="mt-8">
+        <NewIdeaForm />
       </div>
     </Container>
   );
