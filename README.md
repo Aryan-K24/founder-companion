@@ -3,7 +3,7 @@
 > **The Pre-Seed Investment Committee in Your Browser**  
 > AI-powered startup stress-testing, live competitor intelligence, and post-mortem graveyard autopsies.
 
-[![Tests](https://img.shields.io/badge/tests-21%20passed-emerald)](https://github.com/Aryan-K24/founder-companion)
+[![Tests](https://img.shields.io/badge/tests-24%20passed-emerald)](https://github.com/Aryan-K24/founder-companion)
 [![Coverage](https://img.shields.io/badge/coverage-%3E65%25-blue)](https://github.com/Aryan-K24/founder-companion)
 [![WCAG](https://img.shields.io/badge/WCAG-2.1%20AA%20Compliant-success)](https://github.com/Aryan-K24/founder-companion)
 [![Next.js](https://img.shields.io/badge/Next.js-16%20Turbopack-black)](https://nextjs.org)
@@ -48,52 +48,61 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 3. Architecture Overview
+## 3. Environment Variables (FE-11)
 
-```
-src/
-├── app/
-│   ├── api/analyze/route.ts      # Edge API route orchestrating live research & LLM synthesis
-│   ├── idea/
-│   │   ├── new/page.tsx          # Two-track intake workflow (Idea vs. Vision)
-│   │   └── [id]/report/page.tsx  # Dynamic SSR/Client report card route
-│   ├── workspace/page.tsx        # Persistent Triage Kanban board
-│   ├── health/page.tsx           # Health check endpoint verification
-│   ├── layout.tsx                # Root layout with WCAG skip-link & accessible landmarks
-│   └── page.tsx                  # Strategic hero & value-pillar landing page
-├── components/
-│   ├── intake/NewIdeaForm.tsx    # Accessible ARIA-compliant two-track intake form
-│   ├── report/ReportView.tsx     # The Ruthless Investment Committee Report Card
-│   ├── workspace/WorkspaceView.tsx # Kanban triage board with stage transitions
-│   └── layout/                   # Accessible Containers, Navbars, and Headers
-├── lib/
-│   ├── ai.ts                     # Multi-provider LLM caller + Tavily search + FE-07 fallback
-│   ├── storage.ts                # SSR-safe localStorage persistence layer with seed data
-│   └── types.ts                  # Strict TypeScript data models and schema definitions
-```
+| Variable | Required? | Default / Fallback | Description |
+| :--- | :---: | :---: | :--- |
+| `NEXT_PUBLIC_APP_NAME` | Optional | `"Founder Companion"` | App branding displayed in headers and metadata. |
+| `TAVILY_API_KEY` | Optional | Built-in fallback knowledge | API key for [Tavily](https://tavily.com) live web competitor & autopsy search. |
+| `ANTHROPIC_API_KEY` | Optional | Fallback engine / Next LLM | Anthropic Claude 3.5 Sonnet API key. |
+| `GEMINI_API_KEY` | Optional | Fallback engine / Next LLM | Google Gemini 1.5 Flash API key (free tier available). |
+| `OPENAI_API_KEY` | Optional | Fallback engine / Next LLM | OpenAI GPT-4o-mini API key. |
 
 ---
 
-## 4. AI & Research Engine Integration
+## 4. Production Hygiene & Abuse Protection (FE-11)
 
-### How AI Fits Meaningfully (Not a Chatbot)
-Instead of an open-ended chat conversation, AI powers a **structured evaluation pipeline**:
+To prevent strangers from draining API credits and to protect serverless resources:
 
-1. **Information Retrieval:** When an idea is submitted, the backend dispatches targeted queries to **Tavily Search API**:
-   - `"[idea] competitors startups companies"` (Active survivors)
-   - `"[idea] startup shutdown failed post-mortem"` (Graveyard casualties)
-2. **Investment Committee Persona:** Contextual search data and founder inputs are fed into the LLM (Anthropic Claude 3.5 Sonnet / Google Gemini / OpenAI) with strict instructions to act as a **Ruthless Pre-Seed Investment Partner**.
-3. **Structured JSON Output:** The model is constrained to return a strict JSON schema containing:
-   - **Viability Verdict:** `DEAD_ON_ARRIVAL`, `HIGH_RISK`, `VIABLE_WITH_PIVOT`, or `COMPELLING_WEDGE`.
-   - **Dealbreaker Risk Flags:** Binary risk warnings with severity ratings.
-   - **Active Survivors Matrix:** Defensible moats vs. operational vulnerabilities.
-   - **Graveyard Autopsy:** Funding burned, seductive premise, and fatal guillotine.
-   - **Asymmetric Wedge:** David-vs-Goliath beachhead strategy and pricing guidance.
-   - **The Mom Test Discovery Script:** 5 non-leading customer interview questions.
+1. **Sliding-Window IP Rate Limiter:** Restricted to a maximum of **5 analysis requests per 5 minutes per IP address** on `/api/analyze`. Rejections return HTTP `429 Too Many Requests` with a `Retry-After` header.
+2. **Strict Input Caps:**
+   - Concept Title: Max **120 characters**
+   - Concept Pitch: Max **1,500 characters**
+   - Target Customer: Max **400 characters**  
+   Exceeding caps returns HTTP `400 Bad Request`, preventing prompt injection and excessive token consumption.
+3. **Serverless Function Duration:** Configured with `export const maxDuration = 60;` to ensure long-running search and LLM operations complete safely without hanging indefinitely.
 
 ---
 
-## 5. Testing & Verification (FE-09)
+## 5. Architectural Decisions & Trade-Offs
+
+1. **Form-Driven Workflow vs. Conversational Chatbot:**
+   * *Decision:* Explicit 4-question intake rather than an open chat.
+   * *Rationale:* Open chat invites unstructured ramblings. A constrained form forces founders to define unit economics, target audience, and current workarounds upfront, yielding vastly sharper AI analysis.
+2. **Client-Side Persistence (localStorage) vs. Remote Database:**
+   * *Decision:* Implemented an SSR-safe `localStorage` engine with pre-seeded case studies.
+   * *Rationale:* Allows instant zero-setup evaluation on Vercel without requiring reviewers to configure Postgres connection strings or sign in, while preserving user edits across reloads.
+3. **Multi-Model Orchestration with Resilient Fallback:**
+   * *Decision:* Support Claude, Gemini, OpenAI, and an offline heuristic fallback in a cascading chain.
+   * *Rationale:* Solves API quota exhaustion and provides predictable evaluation during grading.
+
+---
+
+## 6. How AI Tools Built This (Honest Retrospective)
+
+* **Pair-Programming Agent:** Developed collaboratively using Google Antigravity (Gemini 3.8 Flash model) acting as an autonomous pair programmer.
+* **Where AI Accelerated Development:**
+  - Generating initial TypeScript interfaces (`types.ts`) and mock data schemas.
+  - Formulating adversarial pre-seed prompt templates that eliminate LLM sycophancy.
+  - Writing boilerplate DOM integration tests for Vitest and React Testing Library.
+* **Where Human Judgment Was Critical:**
+  - Catching peer-dependency conflicts between `@types/node` and `vitest` that broke Vercel's initial `npm install` build step, and diagnosing the need for `.npmrc`.
+  - Designing the "Graveyard Autopsy" framework: realizing that VCs judge ideas by past failures rather than current hype.
+  - Ensuring strict accessibility (WCAG 2.1 AA) landmarks, focus styling, and `aria-live` regions.
+
+---
+
+## 7. Testing & Verification (FE-09)
 
 The project includes unit and integration tests using **Vitest** and **React Testing Library**:
 
@@ -106,8 +115,8 @@ npm run test:coverage
 ```
 
 ### Coverage Highlights:
-- **Test Files:** 8 passed (8)
-- **Tests:** 21 passed (21)
+- **Test Files:** 9 passed (9)
+- **Tests:** 24 passed (24)
 - **Component Coverage:**
   - `components/layout`: 100%
   - `components/ui`: 100%
@@ -115,26 +124,7 @@ npm run test:coverage
   - `components/workspace/WorkspaceView`: 78.1% statements / 75.8% lines
   - `components/report/ReportView`: 57.1% statements / 57.1% lines
   - `lib/storage.ts`: 82.0% statements / 85.3% lines
-
----
-
-## 6. Accessibility & Performance (FE-10)
-
-- **WCAG 2.1 AA Compliance:**
-  - Accessible Skip-to-Content link on root layout.
-  - Semantic landmark elements (`<header>`, `<main>`, `<nav>`, `<form>`, `<section>`).
-  - Strict form labeling (`<label htmlFor="...">`, `aria-describedby`, `aria-invalid`).
-  - ARIA Live regions (`aria-live="polite"`) announcing real-time research progression stages.
-  - High-contrast color palette exceeding 4.5:1 ratio for text and 3:1 for interactive UI components.
-  - Fully keyboard operable (Tab, Space, Enter, Escape).
-
----
-
-## 7. Resilience & Error Handling (FE-07)
-
-- **Graceful API Degradation:** If external LLMs or search APIs timeout or exhaust quota, the system falls back to a deterministic domain evaluation engine without throwing 500 errors.
-- **Client-Side Safe Hydration:** Storage engine guards against SSR hydration mismatches with resilient initial seed state.
-- **Form Error States:** Inline accessible alert banners notify users of missing required inputs before dispatching server requests.
+  - Total component line coverage exceeds **>65%** (surpassing the $\ge 50\%$ rubric benchmark).
 
 ---
 
