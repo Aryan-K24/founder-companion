@@ -16,22 +16,26 @@ import {
   TrendingUp,
   ExternalLink,
   ShieldAlert,
-  ArrowRight,
   GitBranch,
-  Archive,
   Sparkles,
   Info,
+  Layers,
+  HelpCircle,
+  Award,
 } from "lucide-react";
 
 interface ReportViewProps {
   idea: StartupIdea;
 }
 
+type TabType = "verdict" | "competition" | "playbook";
+
 export default function ReportView({ idea }: ReportViewProps) {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<TabType>("verdict");
   const [currentStatus, setCurrentStatus] = useState(idea.status);
   const [pivotModalOpen, setPivotModalOpen] = useState(false);
-  const [pivotTitle, setPivotTitle] = useState(`${idea.title} (Vertical Pivot)`);
+  const [pivotTitle, setPivotTitle] = useState(`${idea.title} (Focused Pivot)`);
   const [pivotPitch, setPivotPitch] = useState(
     idea.report?.survivalWedge.unfairWedge || idea.pitch
   );
@@ -46,7 +50,7 @@ export default function ReportView({ idea }: ReportViewProps) {
           No Report Available
         </h3>
         <p className="mt-1 text-sm text-muted">
-          This idea has not undergone stress-testing yet.
+          This idea has not been evaluated yet.
         </p>
         <Link
           href="/idea/new"
@@ -74,7 +78,7 @@ export default function ReportView({ idea }: ReportViewProps) {
       status: "under_review",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      report: undefined, // Needs new analysis
+      report: undefined,
     };
     saveIdea(pivotedIdea);
     setPivotModalOpen(false);
@@ -86,30 +90,30 @@ export default function ReportView({ idea }: ReportViewProps) {
       case "DEAD_ON_ARRIVAL":
         return {
           icon: <Skull className="h-5 w-5 text-red-600" aria-hidden="true" />,
-          label: "DEAD ON ARRIVAL",
+          label: "DEAD ON ARRIVAL (DO NOT BUILD)",
+          description: "High chance of burning cash and getting ignored. In its current form, you should pivot or drop it.",
           bg: "bg-red-50 border-red-200 text-red-900",
-          barColor: "bg-red-600",
         };
       case "HIGH_RISK":
         return {
           icon: <AlertTriangle className="h-5 w-5 text-amber-600" aria-hidden="true" />,
-          label: "HIGH STRUCTURAL RISK",
+          label: "HIGH RISK — SERIOUS ROADBLOCKS",
+          description: "Massive competitors exist and customer acquisition will be tough. Needs major adjustments to survive.",
           bg: "bg-amber-50 border-amber-200 text-amber-900",
-          barColor: "bg-amber-600",
         };
       case "VIABLE_WITH_PIVOT":
         return {
           icon: <GitBranch className="h-5 w-5 text-teal-700" aria-hidden="true" />,
           label: "VIABLE WITH ASYMMETRIC PIVOT",
+          description: "Don't build for everybody. If you focus on the specific niche recommended below, you have a real chance.",
           bg: "bg-teal-50 border-teal-200 text-teal-900",
-          barColor: "bg-teal-700",
         };
       case "COMPELLING_WEDGE":
         return {
           icon: <CheckCircle2 className="h-5 w-5 text-emerald-600" aria-hidden="true" />,
-          label: "COMPELLING DEFENSIVE WEDGE",
+          label: "STRONG OPPORTUNITY DETECTED",
+          description: "Clear gap in the market with weak existing competitors. Move forward cautiously.",
           bg: "bg-emerald-50 border-emerald-200 text-emerald-900",
-          barColor: "bg-emerald-600",
         };
     }
   };
@@ -130,8 +134,8 @@ export default function ReportView({ idea }: ReportViewProps) {
   const badge = getVerdictBadge(report.verdict);
 
   return (
-    <div className="space-y-8">
-      {/* Fallback Notice for Capstone Evaluators */}
+    <div className="space-y-6">
+      {/* Fallback Notice for Evaluators */}
       {report.isMockFallback && (
         <div
           role="region"
@@ -140,308 +144,382 @@ export default function ReportView({ idea }: ReportViewProps) {
         >
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" aria-hidden="true" />
           <div>
-            <span className="font-semibold">Evaluator Notice (FE-07 Fallback Active): </span>
-            This report was produced by the contextual fallback engine because live API keys (Claude/Gemini + Tavily) are not set in your environment. Provide keys in <code className="rounded bg-blue-100 px-1 font-mono">.env.local</code> to activate live web scraping and real-time LLM inference.
+            <span className="font-semibold">Notice (Offline / Fallback Mode): </span>
+            This report was produced by the built-in domain logic engine because live API keys are not detected on this request. The analysis still applies realistic economic stress-testing based on your input.
           </div>
         </div>
       )}
 
-      {/* Top Header & Triage Bar */}
-      <div className="flex flex-col justify-between gap-4 rounded-2xl border border-border bg-surface p-6 sm:flex-row sm:items-center">
-        <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted">
-            Pre-Seed Autopsy Report
-          </span>
-          <h1 className="font-display mt-1 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            {idea.title}
-          </h1>
-          <p className="mt-1 text-sm text-muted">
-            Targeting: <span className="font-medium text-foreground">{idea.targetCustomer}</span>
-          </p>
-        </div>
-
-        {/* Action Controls */}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => handleStatusChange("active_pursuit")}
-            className={`rounded-lg px-3.5 py-2 text-xs font-semibold transition-all ${
-              currentStatus === "active_pursuit"
-                ? "bg-emerald-600 text-white shadow-sm"
-                : "border border-border bg-background text-muted hover:border-emerald-600 hover:text-emerald-700"
-            }`}
-          >
-            Mark as Active Pursuit
-          </button>
-
-          <button
-            onClick={() => handleStatusChange("killed")}
-            className={`rounded-lg px-3.5 py-2 text-xs font-semibold transition-all ${
-              currentStatus === "killed"
-                ? "bg-red-600 text-white shadow-sm"
-                : "border border-border bg-background text-muted hover:border-red-600 hover:text-red-700"
-            }`}
-          >
-            Send to Graveyard
-          </button>
-
-          <button
-            onClick={() => setPivotModalOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-accent-soft px-3.5 py-2 text-xs font-semibold text-accent transition-colors hover:bg-accent hover:text-white"
-          >
-            <GitBranch className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>Spin off as Pivot</span>
-          </button>
-        </div>
-      </div>
-
-      {/* 1. Verdict Banner */}
-      <div className={`overflow-hidden rounded-2xl border ${badge.bg} p-6 sm:p-8`}>
-        <div className="flex items-center gap-2.5">
-          {badge.icon}
-          <span className="text-xs font-bold uppercase tracking-wider">
-            {badge.label}
-          </span>
-        </div>
-        <h2 className="mt-3 font-display text-xl font-bold text-foreground sm:text-2xl">
-          {report.verdictHeadline}
-        </h2>
-        <p className="mt-3 text-sm leading-relaxed text-foreground/90 whitespace-pre-line">
-          {report.executiveSummary}
-        </p>
-      </div>
-
-      {/* 2. Dealbreaker Flags */}
-      <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
-        <div className="flex items-center gap-2">
-          <ShieldAlert className="h-5 w-5 text-red-600" aria-hidden="true" />
-          <h2 className="font-display text-lg font-semibold text-foreground">
-            Structural Dealbreaker Flags
-          </h2>
-        </div>
-        <p className="mt-1 text-xs text-muted">
-          Fatal traps identified before customer validation. These must be addressed to survive.
-        </p>
-
-        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {report.dealbreakerFlags.map((item, idx) => (
-            <div
-              key={idx}
-              className="rounded-xl border border-border bg-background p-4.5 transition-all"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <h3 className="font-medium text-foreground text-sm">
-                  {item.flag}
-                </h3>
-                <span
-                  className={`rounded-full border px-2 py-0.5 text-[11px] font-bold ${getSeverityBadge(
-                    item.severity
-                  )}`}
-                >
-                  {item.severity}
-                </span>
-              </div>
-              <p className="mt-2.5 text-xs leading-relaxed text-muted">
-                {item.reasoning}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. The Battlefield: Active Giants vs The Graveyard */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Active Competitors */}
-        <div className="rounded-2xl border border-border bg-surface p-6">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-emerald-700" aria-hidden="true" />
-            <h2 className="font-display text-lg font-semibold text-foreground">
-              The Active Survivors
-            </h2>
-          </div>
-          <p className="mt-1 text-xs text-muted">
-            Current players holding market share, their defensibility, and where they bleed.
-          </p>
-
-          <div className="mt-5 space-y-4">
-            {report.activeCompetitors.map((comp, idx) => (
-              <div
-                key={idx}
-                className="rounded-xl border border-border bg-background p-4 text-xs"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-1.5 font-semibold text-foreground text-sm">
-                    <span>{comp.name}</span>
-                    {comp.url && (
-                      <a
-                        href={comp.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted hover:text-accent"
-                        aria-label={`Visit ${comp.name} website`}
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    )}
-                  </div>
-                  <span className="rounded bg-accent-soft px-2 py-0.5 font-medium text-accent text-[11px]">
-                    {comp.marketPosition}
-                  </span>
-                </div>
-
-                <div className="mt-3 space-y-2">
-                  <div>
-                    <span className="font-semibold text-emerald-800">Defensive Moat (Pro): </span>
-                    <span className="text-muted">{comp.moat}</span>
-                  </div>
-                  <div>
-                    <span className="font-semibold text-red-800">The Opening (Con): </span>
-                    <span className="text-muted">{comp.vulnerability}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* The Graveyard (Past Failures) */}
-        <div className="rounded-2xl border border-border bg-surface p-6">
-          <div className="flex items-center gap-2">
-            <Skull className="h-5 w-5 text-red-600" aria-hidden="true" />
-            <h2 className="font-display text-lg font-semibold text-foreground">
-              The Startup Graveyard
-            </h2>
-          </div>
-          <p className="mt-1 text-xs text-muted">
-            Startups that attempted this concept and died. Learn from their autopsy.
-          </p>
-
-          <div className="mt-5 space-y-4">
-            {report.graveyardStartups.map((dead, idx) => (
-              <div
-                key={idx}
-                className="rounded-xl border border-red-200/60 bg-red-50/40 p-4 text-xs"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-1.5 font-semibold text-foreground text-sm">
-                    <span>{dead.name}</span>
-                    {dead.sourceUrl && (
-                      <a
-                        href={dead.sourceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted hover:text-red-700"
-                        aria-label={`Read ${dead.name} post-mortem`}
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    )}
-                  </div>
-                  <span className="rounded bg-red-100 px-2 py-0.5 font-semibold text-red-800 text-[11px]">
-                    Ended {dead.yearEnded} • {dead.fundingBurned || "Unknown Burn"}
-                  </span>
-                </div>
-
-                <div className="mt-3 space-y-2">
-                  <div>
-                    <span className="font-semibold text-foreground">Seductive Promise: </span>
-                    <span className="text-muted">{dead.seductivePromise}</span>
-                  </div>
-                  <div>
-                    <span className="font-semibold text-red-900">The Fatal Guillotine: </span>
-                    <span className="text-red-950 font-medium">{dead.fatalTrap}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* 4. The Survival Wedge Playbook */}
-      <div className="rounded-2xl border border-accent/30 bg-accent-soft/30 p-6 sm:p-8">
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-accent" aria-hidden="true" />
-          <h2 className="font-display text-lg font-semibold text-foreground">
-            The Asymmetric Survival Playbook
-          </h2>
-        </div>
-        <p className="mt-1 text-xs text-muted">
-          How David beats Goliath: your specific beachhead angle, counter-positioning, and pricing.
-        </p>
-
-        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="rounded-xl border border-border bg-surface p-5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-accent">
-              Core Strategy
-            </h3>
-            <p className="mt-1 font-semibold text-foreground text-sm">
-              {report.survivalWedge.strategy}
-            </p>
-            <p className="mt-3 text-xs leading-relaxed text-muted">
-              {report.survivalWedge.unfairWedge}
-            </p>
-          </div>
-
-          <div className="rounded-xl border border-red-200 bg-surface p-5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-red-700">
-              Deadly Mistake to Avoid
-            </h3>
-            <p className="mt-2 text-xs leading-relaxed text-red-950">
-              {report.survivalWedge.deadlyMistakeToAvoid}
-            </p>
-            <div className="mt-4 border-t border-border pt-3">
-              <span className="text-[11px] font-semibold uppercase text-muted">
-                Proposed Pricing Model:
-              </span>
-              <p className="mt-0.5 text-xs font-medium text-foreground">
-                {report.survivalWedge.proposedPricingModel}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 5. The Mom Test Discovery Script */}
-      <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
-        <div className="flex items-center justify-between">
+      {/* Top Header Card */}
+      <div className="rounded-2xl border border-border bg-surface p-6 sm:p-7">
+        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div>
-            <h2 className="font-display text-lg font-semibold text-foreground">
-              Cold-Truth Customer Interview Script (The Mom Test)
-            </h2>
-            <p className="mt-1 text-xs text-muted">
-              Do not pitch your product during customer interviews. Ask these non-leading questions to validate past behavior.
+            <span className="text-xs font-semibold uppercase tracking-wider text-accent">
+              Startup Reality Check
+            </span>
+            <h1 className="font-display mt-1 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              {idea.title}
+            </h1>
+            <p className="mt-1 text-sm text-muted">
+              Target Customer: <span className="font-medium text-foreground">{idea.targetCustomer}</span>
             </p>
           </div>
-        </div>
 
-        <div className="mt-6 space-y-4">
-          {report.momTestQuestions.map((q, idx) => (
-            <div
-              key={idx}
-              className="rounded-xl border border-border bg-background p-5 text-xs"
-            >
-              <div className="flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-white">
-                  {idx + 1}
-                </span>
-                <span className="font-semibold text-foreground text-sm">
-                  Hypothesis: {q.hypothesis}
-                </span>
-              </div>
-
-              <div className="mt-3 pl-7">
-                <p className="font-medium text-accent text-sm">
-                  &ldquo;{q.questionToAsk}&rdquo;
-                </p>
-                <p className="mt-2 text-muted">
-                  <strong className="text-red-700">Trap to Avoid: </strong>
-                  {q.trapToAvoid}
-                </p>
-              </div>
+          {/* Action Box with Clear Helper Subtitles */}
+          <div className="rounded-xl border border-border bg-background p-3.5 sm:p-4">
+            <div className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold text-foreground">
+              <HelpCircle className="h-3.5 w-3.5 text-muted" />
+              <span>What do you want to do with this idea?</span>
             </div>
-          ))}
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => handleStatusChange("active_pursuit")}
+                title="Save to your workspace as an active project you want to build"
+                className={`rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+                  currentStatus === "active_pursuit"
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "border border-border bg-surface text-muted hover:border-emerald-600 hover:text-emerald-700"
+                }`}
+              >
+                ✓ Keep Working On It
+              </button>
+
+              <button
+                onClick={() => handleStatusChange("killed")}
+                title="Mark this idea as too risky and move it to your killed list"
+                className={`rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+                  currentStatus === "killed"
+                    ? "bg-red-600 text-white shadow-sm"
+                    : "border border-border bg-surface text-muted hover:border-red-600 hover:text-red-700"
+                }`}
+              >
+                ✕ Archive (Too Risky)
+              </button>
+
+              <button
+                onClick={() => setPivotModalOpen(true)}
+                title="Clone this idea and test a different, better niche angle"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-accent-soft px-3 py-2 text-xs font-semibold text-accent transition-colors hover:bg-accent hover:text-white"
+              >
+                <GitBranch className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>Try a Different Angle (Pivot)</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Simple, Clean 3-Tab Navigator */}
+      <div
+        role="tablist"
+        aria-label="Report sections"
+        className="grid grid-cols-3 gap-2 rounded-xl border border-border bg-surface p-1.5"
+      >
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "verdict"}
+          onClick={() => setActiveTab("verdict")}
+          className={`flex items-center justify-center gap-2 rounded-lg py-3 text-xs sm:text-sm font-semibold transition-all ${
+            activeTab === "verdict"
+              ? "bg-accent text-accent-foreground shadow-xs"
+              : "text-muted hover:text-foreground"
+          }`}
+        >
+          <Award className="h-4 w-4" />
+          <span>1. The Verdict & Risks</span>
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "competition"}
+          onClick={() => setActiveTab("competition")}
+          className={`flex items-center justify-center gap-2 rounded-lg py-3 text-xs sm:text-sm font-semibold transition-all ${
+            activeTab === "competition"
+              ? "bg-accent text-accent-foreground shadow-xs"
+              : "text-muted hover:text-foreground"
+          }`}
+        >
+          <Layers className="h-4 w-4" />
+          <span>2. Competitors & Failures</span>
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "playbook"}
+          onClick={() => setActiveTab("playbook")}
+          className={`flex items-center justify-center gap-2 rounded-lg py-3 text-xs sm:text-sm font-semibold transition-all ${
+            activeTab === "playbook"
+              ? "bg-accent text-accent-foreground shadow-xs"
+              : "text-muted hover:text-foreground"
+          }`}
+        >
+          <Sparkles className="h-4 w-4" />
+          <span>3. How You Can Win</span>
+        </button>
+      </div>
+
+      {/* TAB 1: THE VERDICT & RISKS */}
+      {activeTab === "verdict" && (
+        <div className="space-y-6">
+          {/* Main Verdict Card */}
+          <div className={`overflow-hidden rounded-2xl border ${badge.bg} p-6 sm:p-8`}>
+            <div className="flex items-center gap-2">
+              {badge.icon}
+              <span className="text-xs font-bold uppercase tracking-wider">
+                {badge.label}
+              </span>
+            </div>
+            <h2 className="mt-3 font-display text-xl font-bold text-foreground sm:text-2xl">
+              {report.verdictHeadline}
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-foreground/90 whitespace-pre-line">
+              {report.executiveSummary}
+            </p>
+          </div>
+
+          {/* Warning Signs */}
+          <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
+            <div className="flex items-center gap-2">
+              <ShieldAlert className="h-5 w-5 text-red-600" aria-hidden="true" />
+              <h3 className="font-display text-lg font-semibold text-foreground">
+                Major Warning Signs (Before You Start)
+              </h3>
+            </div>
+            <p className="mt-1 text-xs text-muted">
+              These are the predictable traps that ruin early startups in this space. Keep them in mind.
+            </p>
+
+            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+              {report.dealbreakerFlags.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-xl border border-border bg-background p-4.5"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="font-semibold text-foreground text-sm">
+                      {item.flag}
+                    </h4>
+                    <span
+                      className={`rounded-full border px-2 py-0.5 text-[11px] font-bold ${getSeverityBadge(
+                        item.severity
+                      )}`}
+                    >
+                      {item.severity}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-xs leading-relaxed text-muted">
+                    {item.reasoning}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: COMPETITORS & FAILURES */}
+      {activeTab === "competition" && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* Active Competitors */}
+          <div className="rounded-2xl border border-border bg-surface p-6">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-emerald-700" aria-hidden="true" />
+              <h3 className="font-display text-lg font-semibold text-foreground">
+                Companies Winning Right Now
+              </h3>
+            </div>
+            <p className="mt-1 text-xs text-muted">
+              The big players holding market share, why people pay them, and where they suck.
+            </p>
+
+            <div className="mt-5 space-y-4">
+              {report.activeCompetitors.map((comp, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-xl border border-border bg-background p-4 text-xs"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 font-semibold text-foreground text-sm">
+                      <span>{comp.name}</span>
+                      {comp.url && (
+                        <a
+                          href={comp.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted hover:text-accent"
+                          aria-label={`Visit ${comp.name} website`}
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </div>
+                    <span className="rounded bg-accent-soft px-2 py-0.5 font-medium text-accent text-[11px]">
+                      {comp.marketPosition}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 space-y-2">
+                    <div>
+                      <span className="font-semibold text-emerald-800">Why Customers Use Them: </span>
+                      <span className="text-muted">{comp.moat}</span>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-red-800">Where They Suck / Overcharge: </span>
+                      <span className="text-muted">{comp.vulnerability}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Startup Graveyard */}
+          <div className="rounded-2xl border border-border bg-surface p-6">
+            <div className="flex items-center gap-2">
+              <Skull className="h-5 w-5 text-red-600" aria-hidden="true" />
+              <h3 className="font-display text-lg font-semibold text-foreground">
+                Startups That Tried This and Died
+              </h3>
+            </div>
+            <p className="mt-1 text-xs text-muted">
+              Real companies that attempted this exact concept, burned capital, and failed.
+            </p>
+
+            <div className="mt-5 space-y-4">
+              {report.graveyardStartups.map((dead, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-xl border border-red-200/60 bg-red-50/40 p-4 text-xs"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 font-semibold text-foreground text-sm">
+                      <span>{dead.name}</span>
+                      {dead.sourceUrl && (
+                        <a
+                          href={dead.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted hover:text-red-700"
+                          aria-label={`Read ${dead.name} post-mortem`}
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </div>
+                    <span className="rounded bg-red-100 px-2 py-0.5 font-semibold text-red-800 text-[11px]">
+                      Died in {dead.yearEnded} • {dead.fundingBurned || "Unknown Burn"}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 space-y-2">
+                    <div>
+                      <span className="font-semibold text-foreground">Why It Looked Good at First: </span>
+                      <span className="text-muted">{dead.seductivePromise}</span>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-red-900">What Actually Killed Them: </span>
+                      <span className="text-red-950 font-medium">{dead.fatalTrap}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: HOW YOU CAN WIN */}
+      {activeTab === "playbook" && (
+        <div className="space-y-6">
+          {/* Survival Strategy */}
+          <div className="rounded-2xl border border-accent/30 bg-accent-soft/30 p-6 sm:p-8">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-accent" aria-hidden="true" />
+              <h3 className="font-display text-lg font-semibold text-foreground">
+                How You Can Still Win (The Secret Angle)
+              </h3>
+            </div>
+            <p className="mt-1 text-xs text-muted">
+              You cannot beat giant companies by doing the same thing. You win by doing one small thing for one narrow group.
+            </p>
+
+            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="rounded-xl border border-border bg-surface p-5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-accent">
+                  Your Best Angle to Start
+                </h4>
+                <p className="mt-1 font-semibold text-foreground text-sm">
+                  {report.survivalWedge.strategy}
+                </p>
+                <p className="mt-3 text-xs leading-relaxed text-muted">
+                  {report.survivalWedge.unfairWedge}
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-red-200 bg-surface p-5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-red-700">
+                  Dumbest Mistake to Avoid
+                </h4>
+                <p className="mt-2 text-xs leading-relaxed text-red-950">
+                  {report.survivalWedge.deadlyMistakeToAvoid}
+                </p>
+                <div className="mt-4 border-t border-border pt-3">
+                  <span className="text-[11px] font-semibold uppercase text-muted">
+                    Realistic Pricing Strategy:
+                  </span>
+                  <p className="mt-0.5 text-xs font-medium text-foreground">
+                    {report.survivalWedge.proposedPricingModel}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Customer Questions */}
+          <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
+            <div>
+              <h3 className="font-display text-lg font-semibold text-foreground">
+                Questions to Ask Real People (Before You Write Code)
+              </h3>
+              <p className="mt-1 text-xs text-muted">
+                Never ask people &ldquo;Do you like this idea?&rdquo; (they will lie to be nice). Ask these questions about their past actions instead:
+              </p>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              {report.momTestQuestions.map((q, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-xl border border-border bg-background p-5 text-xs"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-white">
+                      {idx + 1}
+                    </span>
+                    <span className="font-semibold text-foreground text-sm">
+                      What you are checking: {q.hypothesis}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 pl-7">
+                    <p className="font-medium text-accent text-sm">
+                      Ask this: &ldquo;{q.questionToAsk}&rdquo;
+                    </p>
+                    <p className="mt-2 text-muted">
+                      <strong className="text-red-700">Trap to Avoid: </strong>
+                      {q.trapToAvoid}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Pivot Modal */}
       {pivotModalOpen && (
@@ -453,10 +531,10 @@ export default function ReportView({ idea }: ReportViewProps) {
         >
           <div className="w-full max-w-lg rounded-2xl border border-border bg-surface p-6 shadow-xl">
             <h3 id="pivot-title" className="font-display text-lg font-semibold text-foreground">
-              Spin off as an Asymmetric Pivot
+              Try a Different Angle (Create Pivot)
             </h3>
             <p className="mt-1 text-xs text-muted">
-              Clone this idea into a new iteration focused on the recommended vertical wedge.
+              Clone this concept and focus it on the recommended niche angle.
             </p>
 
             <div className="mt-5 space-y-4">
@@ -475,7 +553,7 @@ export default function ReportView({ idea }: ReportViewProps) {
 
               <div>
                 <label htmlFor="pivot-wedge" className="block text-xs font-semibold text-foreground">
-                  Pivoted Value Wedge (One-liner)
+                  Your New Focus (One-liner)
                 </label>
                 <textarea
                   id="pivot-wedge"
@@ -500,7 +578,7 @@ export default function ReportView({ idea }: ReportViewProps) {
                 onClick={handleCreatePivot}
                 className="rounded-lg bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground shadow-sm hover:opacity-95"
               >
-                Create Pivot in Workspace
+                Save as New Version
               </button>
             </div>
           </div>

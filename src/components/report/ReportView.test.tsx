@@ -78,27 +78,33 @@ describe("ReportView Component", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders active competitors and graveyard autopsy details", () => {
+  it("renders active competitors and graveyard autopsy details when tab 2 is clicked", () => {
     render(<ReportView idea={mockIdea} />);
+    const compTab = screen.getByRole("tab", { name: /2\. Competitors & Failures/i });
+    fireEvent.click(compTab);
+
     expect(screen.getByText("Deel")).toBeInTheDocument();
     expect(screen.getByText(/Global legal footprint/i)).toBeInTheDocument();
     expect(screen.getByText("DeadInvoice Co")).toBeInTheDocument();
     expect(screen.getByText(/CAC outpaced lifetime value/i)).toBeInTheDocument();
   });
 
-  it("renders the Mom Test customer discovery questions", () => {
+  it("renders the customer discovery questions when tab 3 is clicked", () => {
     render(<ReportView idea={mockIdea} />);
+    const playbookTab = screen.getByRole("tab", { name: /3\. How You Can Win/i });
+    fireEvent.click(playbookTab);
+
     expect(
       screen.getByText(/How much did you lose on exchange rates last month\?/i)
     ).toBeInTheDocument();
   });
 
-  it("opens the pivot modal when 'Spin off as Pivot' is clicked", () => {
+  it("opens the pivot modal when 'Try a Different Angle' is clicked", () => {
     render(<ReportView idea={mockIdea} />);
-    const pivotBtn = screen.getByRole("button", { name: /Spin off as Pivot/i });
+    const pivotBtn = screen.getByRole("button", { name: /Try a Different Angle/i });
     fireEvent.click(pivotBtn);
 
     expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(screen.getByText(/Spin off as an Asymmetric Pivot/i)).toBeInTheDocument();
+    expect(screen.getByText(/Try a Different Angle \(Create Pivot\)/i)).toBeInTheDocument();
   });
 });
