@@ -79,6 +79,7 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
   if (!cleanKey) return null;
 
   let targetModels = ["gemini-1.5-flash", "gemini-1.5-pro"];
+  let available: string[] = [];
 
   // 1. Check supported models and validate API key fast
   try {
@@ -88,24 +89,26 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
     );
     if (listRes.ok) {
       const listData = await listRes.json();
-      const available = (listData.models || [])
+      available = (listData.models || [])
         .filter((m: { supportedGenerationMethods?: string[] }) =>
           m.supportedGenerationMethods?.includes("generateContent")
         )
         .map((m: { name: string }) => m.name.replace(/^models\//, ""));
 
       if (available.length > 0) {
+        const nonDeprecated = available.filter((m: string) => !m.includes("2.5"));
         const preferred = [
           "gemini-3.8-flash",
+          "gemini-3.1-pro-preview",
           "gemini-2.0-flash",
           "gemini-1.5-flash",
-          "gemini-1.5-flash-latest",
           "gemini-1.5-pro",
-          ...available,
+          ...nonDeprecated,
         ];
-        const matched = preferred.filter((m) => available.includes(m));
+        const matched = preferred.filter((m) => nonDeprecated.includes(m));
         if (matched.length > 0) targetModels = Array.from(new Set(matched));
-        else targetModels = [available[0]];
+        else if (nonDeprecated.length > 0) targetModels = nonDeprecated;
+        else targetModels = ["gemini-3.8-flash", "gemini-1.5-flash"];
       }
     } else {
       const listErr = await listRes.text();
@@ -152,6 +155,10 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
       lastApiError = `Gemini network/parse error on ${model}: ${err}`;
       console.error(lastApiError);
     }
+  }
+
+  if (lastApiError && available.length > 0) {
+    lastApiError += ` | Available models: ${available.slice(0, 8).join(", ")}`;
   }
 
   return null;
