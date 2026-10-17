@@ -95,9 +95,16 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
         .map((m: { name: string }) => m.name.replace(/^models\//, ""));
 
       if (available.length > 0) {
-        const preferred = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", available[0]];
+        const preferred = [
+          "gemini-3.8-flash",
+          "gemini-2.0-flash",
+          "gemini-1.5-flash",
+          "gemini-1.5-flash-latest",
+          "gemini-1.5-pro",
+          ...available,
+        ];
         const matched = preferred.filter((m) => available.includes(m));
-        if (matched.length > 0) targetModels = matched;
+        if (matched.length > 0) targetModels = Array.from(new Set(matched));
         else targetModels = [available[0]];
       }
     } else {
@@ -110,8 +117,8 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
     console.warn("Gemini ListModels check timed out or failed:", err);
   }
 
-  // 2. Try at most 2 target models with a 6-second timeout each
-  for (const model of targetModels.slice(0, 2)) {
+  // 2. Try candidate target models with a 6-second timeout each
+  for (const model of targetModels.slice(0, 3)) {
     try {
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${cleanKey}`,
