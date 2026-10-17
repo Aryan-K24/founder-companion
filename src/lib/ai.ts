@@ -96,19 +96,22 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
         .map((m: { name: string }) => m.name.replace(/^models\//, ""));
 
       if (available.length > 0) {
-        const nonDeprecated = available.filter((m: string) => !m.includes("2.5"));
+        // Exclude deprecated 2.5 and slow open-weight gemma models
+        const activeGemini = available.filter(
+          (m: string) => !m.includes("2.5") && !m.startsWith("gemma")
+        );
         const preferred = [
+          "gemini-flash-latest",
+          "gemini-flash-lite-latest",
           "gemini-3.8-flash",
-          "gemini-3.1-pro-preview",
           "gemini-2.0-flash",
           "gemini-1.5-flash",
-          "gemini-1.5-pro",
-          ...nonDeprecated,
+          ...activeGemini,
         ];
-        const matched = preferred.filter((m) => nonDeprecated.includes(m));
+        const matched = preferred.filter((m) => activeGemini.includes(m));
         if (matched.length > 0) targetModels = Array.from(new Set(matched));
-        else if (nonDeprecated.length > 0) targetModels = nonDeprecated;
-        else targetModels = ["gemini-3.8-flash", "gemini-1.5-flash"];
+        else if (activeGemini.length > 0) targetModels = activeGemini;
+        else targetModels = ["gemini-flash-latest", "gemini-flash-lite-latest"];
       }
     } else {
       const listErr = await listRes.text();
@@ -128,7 +131,7 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          signal: AbortSignal.timeout(6000),
+          signal: AbortSignal.timeout(9000),
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
           }),
