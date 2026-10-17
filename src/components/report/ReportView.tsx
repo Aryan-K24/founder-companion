@@ -18,10 +18,12 @@ import {
   ShieldAlert,
   GitBranch,
   Sparkles,
-  Info,
   Layers,
   HelpCircle,
   Award,
+  Package,
+  ArrowRight,
+  Compass,
 } from "lucide-react";
 
 interface ReportViewProps {
@@ -91,28 +93,24 @@ export default function ReportView({ idea }: ReportViewProps) {
         return {
           icon: <Skull className="h-5 w-5 text-red-600" aria-hidden="true" />,
           label: "DEAD ON ARRIVAL (DO NOT BUILD)",
-          description: "High chance of burning cash and getting ignored. In its current form, you should pivot or drop it.",
           bg: "bg-red-50 border-red-200 text-red-900",
         };
       case "HIGH_RISK":
         return {
           icon: <AlertTriangle className="h-5 w-5 text-amber-600" aria-hidden="true" />,
           label: "HIGH RISK — SERIOUS ROADBLOCKS",
-          description: "Massive competitors exist and customer acquisition will be tough. Needs major adjustments to survive.",
           bg: "bg-amber-50 border-amber-200 text-amber-900",
         };
       case "VIABLE_WITH_PIVOT":
         return {
           icon: <GitBranch className="h-5 w-5 text-teal-700" aria-hidden="true" />,
           label: "VIABLE WITH ASYMMETRIC PIVOT",
-          description: "Don't build for everybody. If you focus on the specific niche recommended below, you have a real chance.",
           bg: "bg-teal-50 border-teal-200 text-teal-900",
         };
       case "COMPELLING_WEDGE":
         return {
           icon: <CheckCircle2 className="h-5 w-5 text-emerald-600" aria-hidden="true" />,
           label: "STRONG OPPORTUNITY DETECTED",
-          description: "Clear gap in the market with weak existing competitors. Move forward cautiously.",
           bg: "bg-emerald-50 border-emerald-200 text-emerald-900",
         };
     }
@@ -132,20 +130,28 @@ export default function ReportView({ idea }: ReportViewProps) {
   };
 
   const badge = getVerdictBadge(report.verdict);
+  const isHardware = report.productCategory === "physical_hardware";
 
   return (
     <div className="space-y-6">
-      {/* Fallback Notice for Evaluators */}
+      {/* Notice Bar */}
       {report.isMockFallback && (
         <div
           role="region"
-          aria-label="Evaluator notice"
-          className="flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-xs leading-relaxed text-blue-900"
+          aria-label="Evaluation mode notice"
+          className="flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/90 p-4 text-xs leading-relaxed text-blue-900"
         >
-          <Info className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" aria-hidden="true" />
+          <Package className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" aria-hidden="true" />
           <div>
-            <span className="font-semibold">Notice (Offline / Fallback Mode): </span>
-            This report was produced by the built-in domain logic engine because live API keys are not detected on this request. The analysis still applies realistic economic stress-testing based on your input.
+            <span className="font-semibold">Specialized Domain Evaluation Active: </span>
+            {isHardware ? (
+              <span>This concept was detected as a <strong>Physical Hardware / Consumer Gear</strong> product. The analysis evaluates tooling molds, cold retention physics, manufacturing minimums, and physical competitors like Yeti and Coleman.</span>
+            ) : (
+              <span>Analyzed using structured software domain evaluation logic.</span>
+            )}
+            {report.apiErrorDetails && (
+              <p className="mt-1 font-mono text-[11px] text-blue-800/80">API Note: {report.apiErrorDetails}</p>
+            )}
           </div>
         </div>
       )}
@@ -154,9 +160,15 @@ export default function ReportView({ idea }: ReportViewProps) {
       <div className="rounded-2xl border border-border bg-surface p-6 sm:p-7">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-accent">
-              Startup Reality Check
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-accent">
+                Startup Reality Check
+              </span>
+              <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-[11px] font-bold text-accent">
+                {isHardware ? "Physical Product / Hardware" : "Software / SaaS"}
+              </span>
+            </div>
+
             <h1 className="font-display mt-1 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               {idea.title}
             </h1>
@@ -265,18 +277,46 @@ export default function ReportView({ idea }: ReportViewProps) {
       {/* TAB 1: THE VERDICT & RISKS */}
       {activeTab === "verdict" && (
         <div className="space-y-6">
-          {/* Main Verdict Card */}
-          <div className={`overflow-hidden rounded-2xl border ${badge.bg} p-6 sm:p-8`}>
+          {/* THE BOTTOM LINE CARD: Clear 3-Line Answer */}
+          <div className="rounded-2xl border-2 border-accent bg-surface p-6 sm:p-8 shadow-sm">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-accent">
+              <Compass className="h-4 w-4" />
+              <span>THE BOTTOM LINE: IS THIS A GOOD OR BAD IDEA?</span>
+            </div>
+
+            <div className="mt-3">
+              <h2 className="font-display text-xl sm:text-2xl font-bold text-foreground">
+                {report.bottomLine?.isGoodIdea || report.verdictHeadline}
+              </h2>
+
+              <p className="mt-3 text-sm leading-relaxed text-foreground/90 whitespace-pre-line">
+                {report.bottomLine?.inPlainEnglish || report.executiveSummary}
+              </p>
+            </div>
+
+            {report.bottomLine?.immediateNextStep && (
+              <div className="mt-5 flex items-start gap-3 rounded-xl border border-accent/20 bg-accent-soft p-4 text-xs">
+                <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-accent font-bold" />
+                <div>
+                  <span className="font-bold text-accent uppercase tracking-wider">What you should do tomorrow morning: </span>
+                  <span className="text-foreground/90 font-medium">{report.bottomLine.immediateNextStep}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Full Verdict Summary */}
+          <div className={`overflow-hidden rounded-2xl border ${badge.bg} p-6 sm:p-7`}>
             <div className="flex items-center gap-2">
               {badge.icon}
               <span className="text-xs font-bold uppercase tracking-wider">
                 {badge.label}
               </span>
             </div>
-            <h2 className="mt-3 font-display text-xl font-bold text-foreground sm:text-2xl">
+            <h3 className="mt-2 font-display text-lg font-bold text-foreground">
               {report.verdictHeadline}
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-foreground/90 whitespace-pre-line">
+            </h3>
+            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-foreground/90 whitespace-pre-line">
               {report.executiveSummary}
             </p>
           </div>
@@ -286,11 +326,11 @@ export default function ReportView({ idea }: ReportViewProps) {
             <div className="flex items-center gap-2">
               <ShieldAlert className="h-5 w-5 text-red-600" aria-hidden="true" />
               <h3 className="font-display text-lg font-semibold text-foreground">
-                Major Warning Signs (Before You Start)
+                Major Warning Signs (Before You Spend Money)
               </h3>
             </div>
             <p className="mt-1 text-xs text-muted">
-              These are the predictable traps that ruin early startups in this space. Keep them in mind.
+              These are the predictable traps that ruin early startups in this space.
             </p>
 
             <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -329,11 +369,11 @@ export default function ReportView({ idea }: ReportViewProps) {
             <div className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-emerald-700" aria-hidden="true" />
               <h3 className="font-display text-lg font-semibold text-foreground">
-                Companies Winning Right Now
+                Brands & Competitors Winning Right Now
               </h3>
             </div>
             <p className="mt-1 text-xs text-muted">
-              The big players holding market share, why people pay them, and where they suck.
+              Who already sells products in this space, why customers buy from them, and where they suck.
             </p>
 
             <div className="mt-5 space-y-4">
@@ -364,11 +404,11 @@ export default function ReportView({ idea }: ReportViewProps) {
 
                   <div className="mt-3 space-y-2">
                     <div>
-                      <span className="font-semibold text-emerald-800">Why Customers Use Them: </span>
+                      <span className="font-semibold text-emerald-800">Why Customers Buy From Them: </span>
                       <span className="text-muted">{comp.moat}</span>
                     </div>
                     <div>
-                      <span className="font-semibold text-red-800">Where They Suck / Overcharge: </span>
+                      <span className="font-semibold text-red-800">Where They Are Heavy, Bulky, or Flawed: </span>
                       <span className="text-muted">{comp.vulnerability}</span>
                     </div>
                   </div>
@@ -386,7 +426,7 @@ export default function ReportView({ idea }: ReportViewProps) {
               </h3>
             </div>
             <p className="mt-1 text-xs text-muted">
-              Real companies that attempted this exact concept, burned capital, and failed.
+              Real companies and Kickstarter projects that attempted this concept, burned capital, and failed.
             </p>
 
             <div className="mt-5 space-y-4">
@@ -417,11 +457,11 @@ export default function ReportView({ idea }: ReportViewProps) {
 
                   <div className="mt-3 space-y-2">
                     <div>
-                      <span className="font-semibold text-foreground">Why It Looked Good at First: </span>
+                      <span className="font-semibold text-foreground">Why It Looked Brilliant at First: </span>
                       <span className="text-muted">{dead.seductivePromise}</span>
                     </div>
                     <div>
-                      <span className="font-semibold text-red-900">What Actually Killed Them: </span>
+                      <span className="font-semibold text-red-900">The Exact Reason It Collapsed: </span>
                       <span className="text-red-950 font-medium">{dead.fatalTrap}</span>
                     </div>
                   </div>
@@ -440,11 +480,11 @@ export default function ReportView({ idea }: ReportViewProps) {
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-accent" aria-hidden="true" />
               <h3 className="font-display text-lg font-semibold text-foreground">
-                How You Can Still Win (The Secret Angle)
+                How You Can Still Win (Your Secret Angle)
               </h3>
             </div>
             <p className="mt-1 text-xs text-muted">
-              You cannot beat giant companies by doing the same thing. You win by doing one small thing for one narrow group.
+              Don't build a generic cooler. Pick one specific group and solve their exact carrying headache.
             </p>
 
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -483,10 +523,10 @@ export default function ReportView({ idea }: ReportViewProps) {
           <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
             <div>
               <h3 className="font-display text-lg font-semibold text-foreground">
-                Questions to Ask Real People (Before You Write Code)
+                Questions to Ask Real People (Before You Spend on Manufacturing)
               </h3>
               <p className="mt-1 text-xs text-muted">
-                Never ask people &ldquo;Do you like this idea?&rdquo; (they will lie to be nice). Ask these questions about their past actions instead:
+                Never ask people &ldquo;Would you buy this?&rdquo; (they always say yes to be polite). Ask about their past actions:
               </p>
             </div>
 

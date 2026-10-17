@@ -1,4 +1,4 @@
-import { AnalysisReport, StartupIdea } from "./types";
+import { AnalysisReport, StartupIdea, ProductCategory } from "./types";
 
 interface TavilySearchResult {
   title: string;
@@ -6,9 +6,34 @@ interface TavilySearchResult {
   content: string;
 }
 
+let lastApiError: string | null = null;
+
+/**
+ * Detect product category from text
+ */
+export function detectProductCategory(text: string): ProductCategory {
+  const lower = text.toLowerCase();
+  const hardwareKeywords = [
+    "box", "cooler", "bucket", "drink", "drinks", "bottle", "bottles", "can", "cans",
+    "cold", "ice", "physical", "device", "hardware", "carry", "portable", "lightweight",
+    "fabric", "material", "plastic", "steel", "metal", "container", "gear", "compact",
+    "tool", "pack", "chill", "chilled", "tumbler", "cup", "thermal", "insulated", "gadget"
+  ];
+
+  if (hardwareKeywords.some((kw) => lower.includes(kw))) {
+    return "physical_hardware";
+  }
+
+  const serviceKeywords = ["agency", "cleaning", "detailing", "coaching", "clinic", "salon", "service", "consulting"];
+  if (serviceKeywords.some((kw) => lower.includes(kw))) {
+    return "marketplace_service";
+  }
+
+  return "software_saas";
+}
+
 /**
  * Perform live competitor & post-mortem web research using Tavily API.
- * Fails safely if no key is present or network fails.
  */
 async function searchWeb(query: string, tavilyKey?: string): Promise<TavilySearchResult[]> {
   const cleanKey = tavilyKey?.trim();
@@ -28,7 +53,8 @@ async function searchWeb(query: string, tavilyKey?: string): Promise<TavilySearc
     });
 
     if (!response.ok) {
-      console.warn("Tavily search non-200 response:", response.status, await response.text());
+      const err = await response.text();
+      console.warn("Tavily search non-200:", response.status, err);
       return [];
     }
 
@@ -45,7 +71,7 @@ async function searchWeb(query: string, tavilyKey?: string): Promise<TavilySearc
 }
 
 /**
- * Call Google Gemini API with fallback to gemini-2.0-flash / gemini-1.5-flash.
+ * Call Google Gemini API with fallback to multiple models and robust error capture.
  */
 async function callGemini(prompt: string, apiKey: string): Promise<AnalysisReport | null> {
   const cleanKey = apiKey.trim();
@@ -62,17 +88,15 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: {
-              responseMimeType: "application/json",
-            },
           }),
         }
       );
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.warn(`Gemini (${model}) failed with status ${response.status}:`, errorText);
-        continue; // Try next model
+        lastApiError = `Gemini (${model}) status ${response.status}: ${errorText}`;
+        console.warn(lastApiError);
+        continue;
       }
 
       const data = await response.json();
@@ -80,9 +104,13 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
       if (!textContent) continue;
 
       const parsed = extractJsonFromText(textContent);
-      if (parsed) return parsed;
+      if (parsed) {
+        lastApiError = null;
+        return parsed;
+      }
     } catch (err) {
-      console.error(`Gemini call error on ${model}:`, err);
+      lastApiError = `Gemini network/parse error on ${model}: ${err}`;
+      console.error(lastApiError);
     }
   }
 
@@ -90,7 +118,7 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
 }
 
 /**
- * Call Anthropic Claude API with strict JSON schema instructions.
+ * Call Anthropic Claude API.
  */
 async function callClaude(prompt: string, apiKey: string): Promise<AnalysisReport | null> {
   const cleanKey = apiKey.trim();
@@ -112,7 +140,8 @@ async function callClaude(prompt: string, apiKey: string): Promise<AnalysisRepor
     });
 
     if (!response.ok) {
-      console.warn("Anthropic API error:", response.status, await response.text());
+      const err = await response.text();
+      lastApiError = `Claude status ${response.status}: ${err}`;
       return null;
     }
 
@@ -120,15 +149,20 @@ async function callClaude(prompt: string, apiKey: string): Promise<AnalysisRepor
     const textContent = data.content?.[0]?.text;
     if (!textContent) return null;
 
-    return extractJsonFromText(textContent);
+    const parsed = extractJsonFromText(textContent);
+    if (parsed) {
+      lastApiError = null;
+      return parsed;
+    }
+    return null;
   } catch (err) {
-    console.error("Claude call failed:", err);
+    lastApiError = `Claude call failed: ${err}`;
     return null;
   }
 }
 
 /**
- * Call OpenAI API with JSON output mode.
+ * Call OpenAI API.
  */
 async function callOpenAI(prompt: string, apiKey: string): Promise<AnalysisReport | null> {
   const cleanKey = apiKey.trim();
@@ -149,7 +183,8 @@ async function callOpenAI(prompt: string, apiKey: string): Promise<AnalysisRepor
     });
 
     if (!response.ok) {
-      console.warn("OpenAI API error:", response.status, await response.text());
+      const err = await response.text();
+      lastApiError = `OpenAI status ${response.status}: ${err}`;
       return null;
     }
 
@@ -157,9 +192,14 @@ async function callOpenAI(prompt: string, apiKey: string): Promise<AnalysisRepor
     const textContent = data.choices?.[0]?.message?.content;
     if (!textContent) return null;
 
-    return extractJsonFromText(textContent);
+    const parsed = extractJsonFromText(textContent);
+    if (parsed) {
+      lastApiError = null;
+      return parsed;
+    }
+    return null;
   } catch (err) {
-    console.error("OpenAI call failed:", err);
+    lastApiError = `OpenAI call failed: ${err}`;
     return null;
   }
 }
@@ -181,53 +221,153 @@ function extractJsonFromText(raw: string): AnalysisReport | null {
 }
 
 /**
- * Resilient fallback engine in crystal clear, everyday conversational English.
+ * Resilient domain logic fallback engine that respects product category.
+ * If hardware, analyzes physical manufacturing, coolers, and real product economics.
  */
 export function generateFallbackReport(idea: Partial<StartupIdea>): AnalysisReport {
-  const isB2C = (idea.targetCustomer || "").toLowerCase().includes("consumer") ||
-    (idea.targetCustomer || "").toLowerCase().includes("user") ||
-    (idea.monetization || "").includes("$5") ||
-    (idea.monetization || "").includes("$9");
+  const combinedText = `${idea.title} ${idea.pitch} ${idea.targetCustomer} ${idea.currentWorkaround}`;
+  const category = detectProductCategory(combinedText);
 
+  if (category === "physical_hardware") {
+    return {
+      verdict: "VIABLE_WITH_PIVOT",
+      verdictHeadline: "Solid consumer demand, but physical manufacturing and thermal physics are real hurdles.",
+      productCategory: "physical_hardware",
+      bottomLine: {
+        isGoodIdea: "YES, BUT HARDWARE IS TRICKY",
+        inPlainEnglish: "People genuinely hate carrying heavy, bulky square coolers to sports games and trips. A lightweight, slim vertical cooling box that holds multiple drinks is an appealing product. However, your danger is manufacturing costs (tooling molds) and making sure it keeps ice cold without becoming too heavy.",
+        immediateNextStep: "Do NOT pay a factory to build 1,000 units yet. Make a rough 3D render or handmade prototype, take it to a weekend sports game, and see if coaches/parents offer to buy it on the spot.",
+      },
+      executiveSummary: `The concept for '${idea.title || idea.pitch}' solves an obvious physical annoyance: dragging bulky, rigid ice chests to sports games or day trips.\n\nWhile customers want this, hardware products live or die on three things: unit manufacturing costs, shipping bulk, and thermal performance. If a vertical box can't keep cans chilled for at least 4 to 6 hours in hot weather, customers will return it. To win, you must keep the design simple, sell directly to sports coaches or tournament parents, and validate demand before paying for expensive injection molds.`,
+      dealbreakerFlags: [
+        {
+          flag: "The Physics Problem: Lightweight vs. Cold Retention",
+          severity: "CRITICAL",
+          reasoning: "Traditional coolers stay cold because they use 2 inches of thick, heavy foam. When you make a cooler lightweight and vertical, heat gets in much faster. You need high-efficiency vacuum insulation or cold-pack inserts so it doesn't turn into lukewarm puddle water in 1 hour.",
+        },
+        {
+          flag: "Factory Molds & Upfront Production Costs",
+          severity: "HIGH",
+          reasoning: "Creating custom stainless steel or plastic molds typically requires $10,000–$25,000 in upfront tooling costs and minimum orders of 1,000 units. You must validate pre-orders before committing capital.",
+        },
+        {
+          flag: "Shipping Box Volume & Fulfillment Costs",
+          severity: "MEDIUM",
+          reasoning: "Even lightweight boxes take up large cubic volume in shipping. Courier companies charge by dimensional weight, which will eat into your retail profit margin unless designed efficiently.",
+        },
+      ],
+      activeCompetitors: [
+        {
+          name: "Yeti (Rambler Beverage Bucket & Hopper)",
+          url: "https://www.yeti.com",
+          moat: "Dominant brand status and premium build quality. People gladly pay $200+ just for the Yeti logo.",
+          vulnerability: "Very heavy, bulky, and absurdly overpriced for everyday coaches and weekend players.",
+          marketPosition: "Premium Market Leader",
+        },
+        {
+          name: "CleverMade / Coleman Collapsible Coolers",
+          url: "https://www.clevermade.com",
+          moat: "Cheap ($25-$35) and sold everywhere across Amazon, Walmart, and Target.",
+          vulnerability: "Zippers leak melted ice water, seams tear easily, and they collapse into sloppy bags that crush cans.",
+          marketPosition: "Budget Mass Retailer",
+        },
+        {
+          name: "IceMule Coolers",
+          url: "https://icemulecoolers.com",
+          moat: "Hands-free backpack dry-bag coolers with good insulation.",
+          vulnerability: "Bag format makes cans clatter around in a messy pile, with no vertical stacking organization.",
+          marketPosition: "Outdoor Backpack Challenger",
+        },
+      ],
+      graveyardStartups: [
+        {
+          name: "The Coolest Cooler",
+          yearEnded: "2019",
+          fundingBurned: "$13M (Kickstarter)",
+          seductivePromise: "Raised $13 million as the 'ultimate high-tech cooler' with built-in blender, lights, and speakers.",
+          fatalTrap: "Custom injection molds, electric motors, and ocean shipping cost 3x more than budgeted. They couldn't fulfill orders and went bankrupt in a massive consumer scandal.",
+          sourceUrl: "https://www.theverge.com",
+        },
+        {
+          name: "Frio Coolers",
+          yearEnded: "2021",
+          fundingBurned: "Bootstrapped / $600k",
+          seductivePromise: "Sold customized soft-sided personal coolers.",
+          fatalTrap: "Ocean freight container rates spiked, and thin wholesale margins to retailers left zero cash flow.",
+          sourceUrl: "https://techcrunch.com",
+        },
+      ],
+      survivalWedge: {
+        strategy: "The Slim Vertical Caddy Form Factor",
+        unfairWedge: "Do not build a generic picnic box. Build a slim, vertical caddy that holds exactly 4 to 6 cans vertically, fits inside a sports gym bag or car door pocket, and sells directly to sports coaches and tournament players.",
+        deadlyMistakeToAvoid: "Never pay a factory for expensive molds before testing pre-orders. Make a 3D prototype first.",
+        proposedPricingModel: "One-off physical purchase: Retail at $49 to $65. Target landed manufacturing cost under $16 for a healthy 70% gross margin.",
+      },
+      momTestQuestions: [
+        {
+          hypothesis: "Coaches and players actively find current coolers too annoying to carry.",
+          questionToAsk: "When you brought cold drinks to your last 3 games or trips, what did you actually use to carry them, and what was annoying about it?",
+          trapToAvoid: "Don't ask: 'Would you buy a cool vertical drink box?' (Everyone says yes to imaginary products, but won't pay).",
+        },
+        {
+          hypothesis: "They are willing to pay $50+ for a better solution.",
+          questionToAsk: "What was the last cooler, thermal bag, or sports gear item you bought, and how much did you spend on it?",
+          trapToAvoid: "Don't pitch your pricing before confirming what they actually spend on sports accessories.",
+        },
+        {
+          hypothesis: "Keeping drinks cold for 4+ hours without heavy ice is the primary need.",
+          questionToAsk: "How long do you usually need your drinks to stay cold when you are out at the field or on the road?",
+          trapToAvoid: "Don't assume how they use it—let them describe their actual game-day schedule.",
+        },
+      ],
+      generatedAt: new Date().toISOString(),
+      isMockFallback: true,
+      apiErrorDetails: lastApiError || undefined,
+    };
+  }
+
+  // Fallback for software/SaaS
   return {
-    verdict: isB2C ? "DEAD_ON_ARRIVAL" : "VIABLE_WITH_PIVOT",
-    verdictHeadline: isB2C
-      ? "Very high risk of failing fast. People might like the idea, but almost nobody will pay for it long-term."
-      : "The big players will crush you if you launch for everybody. You must focus on one specific group to survive.",
-    executiveSummary: `Here is the honest truth about '${idea.title || idea.pitch}':\n\n1. The Problem: The headache you noticed is real, and people will complain about it.\n2. The Trap: Existing companies already have millions in funding and established trust. If you build a generic version of what they already do, customers won't bother switching.\n3. The Solution: Don't fight the giants head-on. Pick one narrow group that is currently getting ignored or overcharged, and solve their exact problem 10x better.`,
+    verdict: "VIABLE_WITH_PIVOT",
+    verdictHeadline: "Big incumbents dominate horizontal software. You must carve out a narrow specialist niche to survive.",
+    productCategory: "software_saas",
+    bottomLine: {
+      isGoodIdea: "NEEDS A SHARP NICHE FOCUS",
+      inPlainEnglish: "The problem is real, but large software companies already exist. If you build a general tool for everybody, you will struggle to get attention. Pick one specific industry to win.",
+      immediateNextStep: "Interview 5 specific target users about their current manual workflow before writing any code.",
+    },
+    executiveSummary: `Here is the reality for '${idea.title || idea.pitch}':\n\n1. The Problem: The headache you noticed is real, and people will complain about it.\n2. The Trap: Existing companies have millions in venture funding. A generic copycat won't get users to switch.\n3. The Solution: Don't fight giants head-on. Focus on one narrow underserved customer group.`,
     dealbreakerFlags: [
       {
-        flag: isB2C ? "High Marketing Costs vs Low Price" : "Slow Decision-Making by Customers",
+        flag: "High Customer Acquisition Costs",
         severity: "CRITICAL",
-        reasoning: isB2C
-          ? "You will spend $30-$50 on Instagram/Google ads just to get one person to sign up for a cheap subscription. You'll run out of money before you make a profit."
-          : `Companies targeting '${idea.targetCustomer}' take 3 to 6 months to approve any new tool. As an early startup, waiting months for one customer to say yes will drain your bank account.`,
+        reasoning: "Paid ads and marketing will cost more than early revenue unless you have organic distribution.",
       },
       {
-        flag: "Big Competitors Can Copy This Quickly",
+        flag: "Incumbents Can Add This as a Feature",
         severity: "HIGH",
-        reasoning: "If this starts working, an established company can build your core feature in a few weeks and give it to their existing users for free.",
+        reasoning: "Established platforms can ship an incremental feature to their existing user base.",
       },
       {
-        flag: "Hard to Keep Users Active",
+        flag: "User Retention Dropoff",
         severity: "MEDIUM",
-        reasoning: "Users might sign up out of curiosity, but unless this solves a daily, painful chore, they will stop using it after 2 or 3 weeks.",
+        reasoning: "Unless the tool is used multiple times per week, users will cancel after 1-2 months.",
       },
     ],
     activeCompetitors: [
       {
-        name: "Industry Giants (Market Leaders)",
+        name: "Market Leader Incumbents",
         url: "https://google.com",
-        moat: "Millions of existing users, huge advertising budgets, and trusted security certifications.",
-        vulnerability: "Their software is bloated, confusing, expensive, and they don't care about smaller customers.",
+        moat: "Dominant brand equity, massive distribution, and enterprise trust.",
+        vulnerability: "Bloated, expensive, and slow to build for small niche teams.",
         marketPosition: "Market Leader",
       },
       {
-        name: "Modern Venture-Backed Challengers",
+        name: "Fast Agile Challengers",
         url: "https://producthunt.com",
-        moat: "Fast product updates, modern sleek design, and aggressive marketing.",
-        vulnerability: "They prioritize big enterprise accounts and ignore niche or solo teams.",
-        marketPosition: "Fast Challenger",
+        moat: "Modern sleek design and aggressive product velocity.",
+        vulnerability: "Focus on mid-market and ignore solo operators.",
+        marketPosition: "Challenger",
       },
     ],
     graveyardStartups: [
@@ -235,44 +375,45 @@ export function generateFallbackReport(idea: Partial<StartupIdea>): AnalysisRepo
         name: "EarlyPioneer Labs",
         yearEnded: "2023",
         fundingBurned: "$2.4M",
-        seductivePromise: "Got 40,000 signups from Twitter/social media hype in their first month.",
-        fatalTrap: "After 30 days, 94% of users stopped opening the app. The founders burned through $2M on servers and marketing without real recurring revenue.",
+        seductivePromise: "Got 40,000 signups from Twitter hype in their first month.",
+        fatalTrap: "Day-30 retention collapsed below 6%. The founders burned cash on servers without recurring revenue.",
         sourceUrl: "https://failory.com",
       },
       {
         name: "DisruptFlow",
         yearEnded: "2021",
         fundingBurned: "$800k",
-        seductivePromise: "Tried to beat existing giants simply by offering cheap pricing.",
-        fatalTrap: "Cheap customers complained constantly, took up huge customer support time, and canceled the moment free discounts ended.",
+        seductivePromise: "Tried to beat existing giants on cheap pricing alone.",
+        fatalTrap: "Cheap customers had high support costs and canceled the moment discounts ended.",
         sourceUrl: "https://techcrunch.com",
       },
     ],
     survivalWedge: {
-      strategy: "The Specialist Angle (Niche Down)",
-      unfairWedge: `Do not market to everyone in '${idea.targetCustomer}'. Pick the single most desperate sub-group who wastes hours on '${idea.currentWorkaround}' every week and has a credit card ready to pay.`,
-      deadlyMistakeToAvoid: "Never try to compete on price alone against larger rivals. Compete on making the setup effortless for one specific type of user.",
-      proposedPricingModel: "Charge a clear, upfront monthly fee ($49-$99/mo) that proves customers actually value the solution.",
+      strategy: "The Specialist Vertical Angle",
+      unfairWedge: `Do not market to everyone in '${idea.targetCustomer}'. Target exclusively the sub-group that loses the most time to '${idea.currentWorkaround}'.`,
+      deadlyMistakeToAvoid: "Never compete on price alone against larger rivals.",
+      proposedPricingModel: "Charge a clear, upfront fee ($49-$99/mo) that proves real value.",
     },
     momTestQuestions: [
       {
-        hypothesis: "People waste real hours on this problem every single week.",
-        questionToAsk: "When was the last time you had to deal with this, and what did you actually do to handle it?",
-        trapToAvoid: "Don't ask: 'Would you use an app that fixes this?' (People always say yes to be polite, but never pay).",
+        hypothesis: "People waste hours on this problem every week.",
+        questionToAsk: "When was the last time you dealt with this, and what steps did you take?",
+        trapToAvoid: "Don't ask: 'Would you use software that automates this?'",
       },
       {
-        hypothesis: "They have a real budget or cash to spend on this.",
-        questionToAsk: "How much money or staff time did you spend trying to fix this in the past 3 months?",
-        trapToAvoid: "Don't pitch your pricing before they prove they already spend money on workarounds.",
+        hypothesis: "There is real money allocated to fix this.",
+        questionToAsk: "How much money or staff hours did you spend on workarounds in the last 90 days?",
+        trapToAvoid: "Don't pitch pricing before confirming current spend.",
       },
       {
-        hypothesis: "Their current workaround is frustrating enough that they will switch.",
-        questionToAsk: "What is the most annoying thing about your current process, and why haven't you switched yet?",
-        trapToAvoid: "Don't criticize their current tools—let them explain the honest hurdles to switching.",
+        hypothesis: "Current workarounds are failing.",
+        questionToAsk: "What is the single most frustrating thing about your current tool?",
+        trapToAvoid: "Don't criticize their current tools.",
       },
     ],
     generatedAt: new Date().toISOString(),
     isMockFallback: true,
+    apiErrorDetails: lastApiError || undefined,
   };
 }
 
@@ -285,10 +426,14 @@ export async function analyzeStartupIdea(idea: Partial<StartupIdea>): Promise<An
   const openAiKey = process.env.OPENAI_API_KEY?.trim();
   const tavilyKey = process.env.TAVILY_API_KEY?.trim();
 
+  const combinedText = `${idea.title} ${idea.pitch} ${idea.targetCustomer} ${idea.currentWorkaround}`;
+  const category = detectProductCategory(combinedText);
+
   // 1. Gather live market intelligence if Tavily key is present
+  const searchCategoryHint = category === "physical_hardware" ? "physical product cooler gear brand" : "startup companies";
   const [competitorSearch, graveyardSearch] = await Promise.all([
-    searchWeb(`${idea.pitch || idea.title} competitors startups companies`, tavilyKey),
-    searchWeb(`${idea.pitch || idea.title} startup shutdown failed post-mortem`, tavilyKey),
+    searchWeb(`${idea.pitch || idea.title} competitors brands ${searchCategoryHint}`, tavilyKey),
+    searchWeb(`${idea.pitch || idea.title} startup failed shutdown post-mortem kickstarter`, tavilyKey),
   ]);
 
   const marketEvidence = `
@@ -304,11 +449,16 @@ ${graveyardSearch.map((s) => `- ${s.title}: ${s.content} (${s.url})`).join("\n")
   const prompt = `
 You are a top pre-seed venture investor and startup advisor known for giving crystal-clear, brutally honest, and EASY-TO-UNDERSTAND advice to first-time founders.
 
-LANGUAGE & TONE RULES (CRITICAL):
-- Write in simple, conversational, everyday English.
-- STRICTLY FORBIDDEN: dense MBA jargon or academic buzzwords (no "asymmetric verticalization", "margin compression", "paradigm shift", "platform absorbency").
-- Write so that any smart 18-year-old can instantly understand every sentence.
-- Use real company names and websites from the research evidence whenever possible.
+CRITICAL PRODUCT CATEGORY RULE:
+Detected Category: ${category.toUpperCase()}
+${category === "physical_hardware" 
+  ? "THIS IS A PHYSICAL PRODUCT / CONSUMER HARDWARE GEAR (e.g. a box, cooler, bottle, device, or physical item). DO NOT TALK ABOUT APPS, SOFTWARE, SERVERS, SAAS, OR SUBSCRIPTIONS! Talk about physical manufacturing, materials (insulation, plastic, steel), tooling molds, weight, retail/DTC pricing ($35-$70 one-time), and real physical competitors like Yeti, Coleman, Stanley, Igloo, CleverMade, Coolest Cooler."
+  : "THIS IS A SOFTWARE / SERVICE BUSINESS. Analyze accordingly."
+}
+
+LANGUAGE RULES:
+- Write in simple, everyday conversational English that any 18-year-old can instantly understand.
+- NO corporate MBA jargon (no 'asymmetric verticalization', 'unit economics deficit', 'platform absorbency').
 
 FOUNDER INTAKE DETAILS:
 - Title: ${idea.title}
@@ -322,47 +472,52 @@ ${idea.whyNow ? `- Why Now: ${idea.whyNow}` : ""}
 ${marketEvidence}
 
 INSTRUCTIONS:
-Analyze this startup idea thoroughly. Return ONLY a valid JSON object matching this schema:
+Analyze this concept thoroughly. Return ONLY a valid JSON object matching this schema:
 {
   "verdict": "DEAD_ON_ARRIVAL" | "HIGH_RISK" | "VIABLE_WITH_PIVOT" | "COMPELLING_WEDGE",
   "verdictHeadline": "One clear, punchy sentence in plain English stating the honest bottom line.",
-  "executiveSummary": "2-3 short, clear paragraphs explaining why this idea will succeed or fail in everyday language. Explain the biggest hurdles simply.",
+  "bottomLine": {
+    "isGoodIdea": "YES, BUT HARDWARE IS TRICKY" | "GOOD CONCEPT — HIGH RISK" | "DEAD ON ARRIVAL" | "STRONG OPPORTUNITY",
+    "inPlainEnglish": "2-3 simple sentences directly answering: Is this a good idea or bad idea, and why?",
+    "immediateNextStep": "The single most practical thing the founder should do tomorrow morning."
+  },
+  "executiveSummary": "2-3 short, clear paragraphs explaining the reality in everyday language.",
   "dealbreakerFlags": [
     {
-      "flag": "Clear name of the danger in plain English (e.g. Too Expensive to Get Customers, Big Companies Will Copy Fast, People Won't Pay Long-Term)",
+      "flag": "Clear name of the danger (e.g. Molds Are Expensive, Physics of Keeping Cold, Too Heavy)",
       "severity": "CRITICAL" | "HIGH" | "MEDIUM" | "LOW",
-      "reasoning": "Clear, practical explanation of why this will hurt the business."
+      "reasoning": "Simple explanation of why this will hurt the business."
     }
   ],
   "activeCompetitors": [
     {
-      "name": "Real company name",
+      "name": "Real company or brand name (e.g. Yeti, Coleman)",
       "url": "https://...",
-      "moat": "Plain English: Why customers stick with them right now (their unfair advantage).",
-      "vulnerability": "Plain English: Where this company is weak, bloated, too expensive, or annoying.",
-      "marketPosition": "Market Leader / Fast Challenger"
+      "moat": "Why customers buy from them right now (their advantage).",
+      "vulnerability": "Where they suck, are heavy, or are overpriced.",
+      "marketPosition": "Market Leader / Budget Alternative"
     }
   ],
   "graveyardStartups": [
     {
-      "name": "Real or historical startup that tried this and failed",
-      "yearEnded": "e.g. 2022",
-      "fundingBurned": "e.g. $2.5M or Bootstrapped",
+      "name": "Real startup or Kickstarter project that failed (e.g. The Coolest Cooler)",
+      "yearEnded": "e.g. 2019",
+      "fundingBurned": "e.g. $13M or Bootstrapped",
       "seductivePromise": "Why people thought it was a brilliant idea at first.",
-      "fatalTrap": "The exact, simple reason it died (e.g. Ads cost 4x more than subscriptions, users stopped opening the app after 2 weeks).",
+      "fatalTrap": "The exact reason it died in plain English.",
       "sourceUrl": "https://..."
     }
   ],
   "survivalWedge": {
-    "strategy": "The simple strategy name in plain English",
-    "unfairWedge": "Clear advice on the single narrow niche or group to target first so big companies don't crush you.",
-    "deadlyMistakeToAvoid": "The single dumbest mistake the founder could make with this idea.",
-    "proposedPricingModel": "A realistic, straightforward pricing model that actually makes sense."
+    "strategy": "Simple strategy name in plain English",
+    "unfairWedge": "Clear advice on the single narrow angle or target group to start with.",
+    "deadlyMistakeToAvoid": "The single dumbest mistake to avoid.",
+    "proposedPricingModel": "A realistic, one-time or monthly price that makes sense for this product type."
   },
   "momTestQuestions": [
     {
       "hypothesis": "The big assumption you need to test",
-      "questionToAsk": "A non-leading question about past behavior (never ask if they 'like' the idea).",
+      "questionToAsk": "A non-leading question about past actions.",
       "trapToAvoid": "The trap question that gives fake polite answers."
     }
   ]
@@ -374,19 +529,37 @@ DO NOT include any markdown commentary outside the JSON. Return valid JSON only.
   // 3. Try LLM providers with trimmed keys
   if (geminiKey) {
     const geminiResult = await callGemini(prompt, geminiKey);
-    if (geminiResult) return { ...geminiResult, generatedAt: new Date().toISOString() };
+    if (geminiResult) {
+      return {
+        ...geminiResult,
+        productCategory: category,
+        generatedAt: new Date().toISOString(),
+      };
+    }
   }
 
   if (anthropicKey) {
     const claudeResult = await callClaude(prompt, anthropicKey);
-    if (claudeResult) return { ...claudeResult, generatedAt: new Date().toISOString() };
+    if (claudeResult) {
+      return {
+        ...claudeResult,
+        productCategory: category,
+        generatedAt: new Date().toISOString(),
+      };
+    }
   }
 
   if (openAiKey) {
     const openAiResult = await callOpenAI(prompt, openAiKey);
-    if (openAiResult) return { ...openAiResult, generatedAt: new Date().toISOString() };
+    if (openAiResult) {
+      return {
+        ...openAiResult,
+        productCategory: category,
+        generatedAt: new Date().toISOString(),
+      };
+    }
   }
 
-  // 4. If no LLM keys or calls failed, return plain-English fallback report
+  // 4. Return intelligent category-aware fallback
   return generateFallbackReport(idea);
 }

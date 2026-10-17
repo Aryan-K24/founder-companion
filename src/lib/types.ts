@@ -10,6 +10,11 @@ export type VerdictType =
   | "VIABLE_WITH_PIVOT"
   | "COMPELLING_WEDGE";
 
+export type ProductCategory =
+  | "physical_hardware"
+  | "software_saas"
+  | "marketplace_service";
+
 export interface DealbreakerFlag {
   flag: string;
   severity: SeverityLevel;
@@ -46,10 +51,18 @@ export interface MomTestQuestion {
   trapToAvoid: string;
 }
 
+export interface BottomLineVerdict {
+  isGoodIdea: string; // e.g. "Solid Consumer Demand, Tough Physical Manufacturing"
+  inPlainEnglish: string; // Clear 2-3 sentences explaining if it's good or bad
+  immediateNextStep: string; // The single thing to do next
+}
+
 export interface AnalysisReport {
   verdict: VerdictType;
   verdictHeadline: string;
   executiveSummary: string;
+  productCategory?: ProductCategory;
+  bottomLine?: BottomLineVerdict;
   dealbreakerFlags: DealbreakerFlag[];
   activeCompetitors: ActiveCompetitor[];
   graveyardStartups: GraveyardStartup[];
@@ -57,6 +70,7 @@ export interface AnalysisReport {
   momTestQuestions: MomTestQuestion[];
   generatedAt: string;
   isMockFallback?: boolean;
+  apiErrorDetails?: string;
 }
 
 export interface StartupIdea {

@@ -73,9 +73,10 @@ describe("ReportView Component", () => {
     render(<ReportView idea={mockIdea} />);
     const matches = screen.getAllByText(/VIABLE WITH ASYMMETRIC PIVOT/i);
     expect(matches.length).toBeGreaterThan(0);
-    expect(
-      screen.getByText(/Detailed executive analysis of why direct competition will fail/i)
-    ).toBeInTheDocument();
+    const summaryMatches = screen.getAllByText(
+      /Detailed executive analysis of why direct competition will fail/i
+    );
+    expect(summaryMatches.length).toBeGreaterThan(0);
   });
 
   it("renders active competitors and graveyard autopsy details when tab 2 is clicked", () => {
