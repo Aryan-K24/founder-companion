@@ -43,6 +43,7 @@ async function searchWeb(query: string, tavilyKey?: string): Promise<TavilySearc
     const response = await fetch("https://api.tavily.com/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(3000),
       body: JSON.stringify({
         api_key: cleanKey,
         query,
@@ -77,20 +78,13 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
   const cleanKey = apiKey.trim();
   if (!cleanKey) return null;
 
-  let modelsToTry = [
-    "gemini-1.5-flash",
-    "gemini-1.5-flash-latest",
-    "gemini-2.0-flash",
-    "gemini-2.0-flash-exp",
-    "gemini-1.5-pro",
-    "gemini-1.5-pro-latest",
-    "gemini-pro",
-  ];
+  let targetModels = ["gemini-1.5-flash", "gemini-1.5-pro"];
 
-  // Dynamically discover supported models for this specific API key if possible
+  // 1. Check supported models and validate API key fast
   try {
     const listRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models?key=${cleanKey}`
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${cleanKey}`,
+      { signal: AbortSignal.timeout(3500) }
     );
     if (listRes.ok) {
       const listData = await listRes.json();
@@ -101,24 +95,30 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
         .map((m: { name: string }) => m.name.replace(/^models\//, ""));
 
       if (available.length > 0) {
-        // Prioritize discovered models that actually support generateContent
-        modelsToTry = Array.from(new Set([...available, ...modelsToTry]));
+        const preferred = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", available[0]];
+        const matched = preferred.filter((m) => available.includes(m));
+        if (matched.length > 0) targetModels = matched;
+        else targetModels = [available[0]];
       }
     } else {
       const listErr = await listRes.text();
-      lastApiError = `Gemini key status ${listRes.status}: ${listErr}`;
+      lastApiError = `Gemini API key rejected (${listRes.status}): ${listErr}`;
+      // Key rejected by Google (invalid, quota, or permission). Fail immediately so fallback returns instantly.
+      return null;
     }
   } catch (err) {
-    console.warn("Could not list Gemini models:", err);
+    console.warn("Gemini ListModels check timed out or failed:", err);
   }
 
-  for (const model of modelsToTry) {
+  // 2. Try at most 2 target models with a 6-second timeout each
+  for (const model of targetModels.slice(0, 2)) {
     try {
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${cleanKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: AbortSignal.timeout(6000),
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
           }),
