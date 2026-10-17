@@ -77,7 +77,40 @@ async function callGemini(prompt: string, apiKey: string): Promise<AnalysisRepor
   const cleanKey = apiKey.trim();
   if (!cleanKey) return null;
 
-  const modelsToTry = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"];
+  let modelsToTry = [
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-latest",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-exp",
+    "gemini-1.5-pro",
+    "gemini-1.5-pro-latest",
+    "gemini-pro",
+  ];
+
+  // Dynamically discover supported models for this specific API key if possible
+  try {
+    const listRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${cleanKey}`
+    );
+    if (listRes.ok) {
+      const listData = await listRes.json();
+      const available = (listData.models || [])
+        .filter((m: { supportedGenerationMethods?: string[] }) =>
+          m.supportedGenerationMethods?.includes("generateContent")
+        )
+        .map((m: { name: string }) => m.name.replace(/^models\//, ""));
+
+      if (available.length > 0) {
+        // Prioritize discovered models that actually support generateContent
+        modelsToTry = Array.from(new Set([...available, ...modelsToTry]));
+      }
+    } else {
+      const listErr = await listRes.text();
+      lastApiError = `Gemini key status ${listRes.status}: ${listErr}`;
+    }
+  } catch (err) {
+    console.warn("Could not list Gemini models:", err);
+  }
 
   for (const model of modelsToTry) {
     try {
