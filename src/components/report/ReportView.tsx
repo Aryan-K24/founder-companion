@@ -397,7 +397,14 @@ export default function ReportView({ idea }: ReportViewProps) {
                         </a>
                       )}
                     </div>
-                    <span className="rounded bg-accent-soft px-2 py-0.5 font-medium text-accent text-[11px]">
+                    <span
+                      className={`rounded px-2.5 py-0.5 font-medium text-[11px] ${
+                        comp.marketPosition.toLowerCase().includes("india")
+                          ? "border border-amber-300 bg-amber-50 text-amber-900 font-semibold"
+                          : "border border-accent/20 bg-accent-soft text-accent"
+                      }`}
+                    >
+                      {comp.marketPosition.toLowerCase().includes("india") ? "🇮🇳 " : "🌐 "}
                       {comp.marketPosition}
                     </span>
                   </div>
