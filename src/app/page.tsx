@@ -21,19 +21,25 @@ import {
 export default function HomePage() {
   return (
     <div className="relative overflow-hidden bg-background">
+      {/* Subtle Atmospheric Ambient Lighting */}
+      <div className="absolute top-0 left-0 right-0 h-[550px] hero-glow pointer-events-none" />
+
       {/* HERO SECTION */}
       <section className="relative pt-12 pb-16 sm:pt-20 sm:pb-24">
         <Container className="flex flex-col items-center text-center">
           {/* Eyebrow Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-4 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/90 bg-blue-50/80 px-4 py-1.5 text-xs font-semibold text-blue-900 shadow-2xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600" />
+            </span>
             <span>Early-Stage Venture Intelligence · Dual Geography (🇮🇳 India + 🌐 Global)</span>
           </div>
 
-          {/* Master Headline */}
-          <h1 className="font-display mt-6 max-w-4xl text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl text-balance leading-[1.15]">
+          {/* Master Headline with Crisp Cobalt Brand Punch */}
+          <h1 className="font-display mt-6 max-w-4xl text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl text-balance leading-[1.14]">
             Stress-test your startup concept <br />
-            <span className="text-slate-500 font-normal">
+            <span className="text-blue-600 font-extrabold">
               before you spend 6 months building.
             </span>
           </h1>
@@ -49,26 +55,27 @@ export default function HomePage() {
           </div>
 
           {/* Trust Metric Badges */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-slate-600">
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs font-semibold">
+            <div className="flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50/80 px-3.5 py-1.5 text-blue-900 shadow-2xs">
+              <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
               <span>Dual-Market Coverage (🇮🇳 India + 🌐 Global)</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+            <div className="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50/80 px-3.5 py-1.5 text-emerald-900 shadow-2xs">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
               <span>Verified Real Incumbents (Zero Hallucinations)</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+            <div className="flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50/80 px-3.5 py-1.5 text-indigo-900 shadow-2xs">
+              <CheckCircle2 className="h-4 w-4 text-indigo-600 shrink-0" />
               <span>The Mom Test Discovery Framework</span>
             </div>
           </div>
 
           {/* Interactive Live Product Preview Container */}
           <div className="mt-14 w-full flex flex-col items-center">
-            <div className="mb-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+            <div className="mb-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-800">
+              <span className="h-2 w-2 rounded-full bg-blue-600" />
               <span>Interactive Intelligence Report Preview</span>
-              <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] text-slate-800 font-bold">
+              <span className="rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] text-blue-700 font-bold">
                 Live Data Simulation
               </span>
             </div>
@@ -81,7 +88,7 @@ export default function HomePage() {
       <section className="relative border-y border-slate-200 bg-white py-16 sm:py-24">
         <Container>
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
               Diligence Architecture
             </span>
             <h2 className="font-display mt-2 text-2xl sm:text-3xl font-bold text-slate-900">
@@ -95,10 +102,10 @@ export default function HomePage() {
           {/* 4-Box Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Bento Box 1: Dual Market Radar (Span 2) */}
-            <div className="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50/50 p-7 sm:p-8 shadow-xs">
+            <div className="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50/70 p-7 sm:p-8 shadow-xs hover:border-blue-300 transition-all">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white shadow-xs">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-500/20">
                     <Globe2 className="h-5 w-5" />
                   </div>
                   <div>
@@ -108,7 +115,7 @@ export default function HomePage() {
                     <p className="text-xs text-slate-500 font-medium">Parallel search across domestic and international ecosystems</p>
                   </div>
                 </div>
-                <span className="hidden sm:inline-flex rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700">
+                <span className="hidden sm:inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-bold text-blue-800">
                   Global + India
                 </span>
               </div>
@@ -118,11 +125,11 @@ export default function HomePage() {
               </p>
 
               <div className="mt-5 grid grid-cols-2 gap-3 text-xs">
-                <div className="rounded-xl border border-slate-200 bg-white p-3.5">
-                  <span className="font-bold text-slate-900 block">🌐 Global Incumbents</span>
-                  <span className="text-slate-600 text-[11px] mt-0.5 block">Distribution moats, enterprise compliance & global pricing scale.</span>
+                <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-3.5">
+                  <span className="font-bold text-blue-950 block">🌐 Global Incumbents</span>
+                  <span className="text-blue-900/90 text-[11px] mt-0.5 block">Distribution moats, enterprise compliance & global pricing scale.</span>
                 </div>
-                <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-3.5">
+                <div className="rounded-xl border border-amber-200 bg-amber-50/80 p-3.5">
                   <span className="font-bold text-amber-950 block">🇮🇳 Indian Market Leaders</span>
                   <span className="text-amber-900/90 text-[11px] mt-0.5 block">Tier 1–3 retail density, price sensitivity & domestic supply chains.</span>
                 </div>
@@ -130,9 +137,9 @@ export default function HomePage() {
             </div>
 
             {/* Bento Box 2: Post-Mortem Autopsy Engine (Span 1) */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-7 shadow-xs flex flex-col justify-between">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-7 shadow-xs flex flex-col justify-between hover:border-rose-300 transition-all">
               <div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white shadow-xs mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-600 text-white shadow-md shadow-rose-500/20 mb-4">
                   <History className="h-5 w-5" />
                 </div>
                 <h3 className="font-display text-lg font-bold text-slate-900">
@@ -143,15 +150,15 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="mt-5 rounded-xl border border-rose-200 bg-rose-50/60 p-3 text-[11px] text-rose-950 font-medium">
+              <div className="mt-5 rounded-xl border border-rose-200 bg-rose-50/80 p-3 text-[11px] text-rose-950 font-medium">
                 Example: Coolest Cooler burned \$13M on custom electric motors and mold tooling before bankruptcy.
               </div>
             </div>
 
             {/* Bento Box 3: The Mom Test Behavioral Discovery (Span 1) */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-7 shadow-xs flex flex-col justify-between">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-7 shadow-xs flex flex-col justify-between hover:border-indigo-300 transition-all">
               <div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white shadow-xs mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-500/20 mb-4">
                   <Target className="h-5 w-5" />
                 </div>
                 <h3 className="font-display text-lg font-bold text-slate-900">
@@ -162,15 +169,15 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="mt-5 rounded-xl border border-slate-200 bg-white p-3 text-[11px] text-slate-800 font-medium">
+              <div className="mt-5 rounded-xl border border-indigo-200 bg-indigo-50/80 p-3 text-[11px] text-indigo-950 font-medium">
                 Generates verbatim prompts to ask customers tomorrow morning without revealing your solution.
               </div>
             </div>
 
             {/* Bento Box 4: Asymmetric Wedge Synthesizer (Span 2) */}
-            <div className="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50/50 p-7 sm:p-8 shadow-xs">
+            <div className="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50/70 p-7 sm:p-8 shadow-xs hover:border-emerald-300 transition-all">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white shadow-xs">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
                   <Zap className="h-5 w-5" />
                 </div>
                 <div>
@@ -186,13 +193,13 @@ export default function HomePage() {
               </p>
 
               <div className="mt-5 flex flex-wrap items-center gap-3 text-xs">
-                <span className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-semibold text-slate-800">
+                <span className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 font-bold text-emerald-800">
                   Targeted Customer Micro-Niches
                 </span>
-                <span className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-semibold text-slate-800">
+                <span className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 font-bold text-blue-800">
                   Sustainable Unit Economics & Pricing
                 </span>
-                <span className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-semibold text-slate-800">
+                <span className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 font-bold text-amber-800">
                   Defensible Beachhead Wedge
                 </span>
               </div>
@@ -338,13 +345,13 @@ export default function HomePage() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <Link
               href="/idea/new"
-              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/50 p-8 transition-all hover:border-slate-900 hover:bg-white hover:shadow-md"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/60 p-8 transition-all hover:border-blue-300 hover:bg-white hover:shadow-lg"
             >
               <div>
-                <div className="mb-4 inline-flex rounded-xl bg-slate-200 p-3 text-slate-900">
+                <div className="mb-4 inline-flex rounded-xl bg-blue-100 p-3 text-blue-700 shadow-2xs">
                   <Lightbulb className="h-6 w-6" aria-hidden="true" />
                 </div>
-                <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500">
+                <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-blue-700">
                   Solution-Driven Track
                 </span>
                 <h3 className="font-display text-xl font-bold text-slate-900">
@@ -354,20 +361,20 @@ export default function HomePage() {
                   You already know what you plan to build. Input your target audience, current customer workarounds, and monetization model to discover blind spots and competitive moats.
                 </p>
               </div>
-              <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 group-hover:underline">
+              <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-bold text-blue-600 group-hover:text-blue-700">
                 Stress-test concrete idea &rarr;
               </span>
             </Link>
 
             <Link
               href="/idea/new"
-              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/50 p-8 transition-all hover:border-slate-900 hover:bg-white hover:shadow-md"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/60 p-8 transition-all hover:border-indigo-300 hover:bg-white hover:shadow-lg"
             >
               <div>
-                <div className="mb-4 inline-flex rounded-xl bg-slate-200 p-3 text-slate-900">
+                <div className="mb-4 inline-flex rounded-xl bg-indigo-100 p-3 text-indigo-700 shadow-2xs">
                   <Compass className="h-6 w-6" aria-hidden="true" />
                 </div>
-                <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500">
+                <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-indigo-700">
                   Problem-Driven Track
                 </span>
                 <h3 className="font-display text-xl font-bold text-slate-900">
@@ -377,7 +384,7 @@ export default function HomePage() {
                   You spotted an acute industry friction point but don&apos;t know the software shape yet. Explore market gaps and discover viable business model pathways.
                 </p>
               </div>
-              <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 group-hover:underline">
+              <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 group-hover:text-indigo-700">
                 Explore problem space &rarr;
               </span>
             </Link>
@@ -444,11 +451,11 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* FINAL CALL TO ACTION (Obsidian Card) */}
+      {/* FINAL CALL TO ACTION (Vibrant Deep Blue & Slate Card) */}
       <section className="pb-20">
         <Container>
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 sm:p-14 text-center text-white shadow-xl">
-            <h2 className="font-display text-2xl sm:text-4xl font-bold tracking-tight">
+          <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 p-8 sm:p-14 text-center text-white shadow-2xl">
+            <h2 className="font-display text-2xl sm:text-4xl font-extrabold tracking-tight">
               Stop guessing. Validate your concept today.
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-xs sm:text-base text-slate-300 leading-relaxed">
@@ -458,7 +465,7 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/idea/new"
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-sm font-bold text-slate-900 shadow-md transition-all hover:bg-slate-100"
+                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-500 active:scale-[0.98]"
               >
                 <span>Start Free Analysis</span>
                 <ArrowRight className="h-4 w-4" />
@@ -466,7 +473,7 @@ export default function HomePage() {
 
               <Link
                 href="/workspace"
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-slate-700"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/80 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
               >
                 <span>Explore Workspace</span>
               </Link>
