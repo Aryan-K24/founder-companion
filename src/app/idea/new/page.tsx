@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import Container from "@/components/layout/Container";
 import PageHeader from "@/components/layout/PageHeader";
 import NewIdeaForm from "@/components/intake/NewIdeaForm";
+import { Loader2 } from "lucide-react";
 
 export default function NewIdeaPage() {
   return (
@@ -12,7 +14,15 @@ export default function NewIdeaPage() {
       />
 
       <div className="mt-8">
-        <NewIdeaForm />
+        <Suspense
+          fallback={
+            <div className="flex h-64 items-center justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-teal-800" />
+            </div>
+          }
+        >
+          <NewIdeaForm />
+        </Suspense>
       </div>
     </Container>
   );

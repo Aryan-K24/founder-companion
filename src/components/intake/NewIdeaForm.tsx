@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { IdeaTrack, StartupIdea } from "@/lib/types";
 import { saveIdea } from "@/lib/storage";
@@ -21,6 +21,20 @@ export default function NewIdeaForm() {
   const [monetization, setMonetization] = useState("");
   const [problemStatement, setProblemStatement] = useState("");
   const [whyNow, setWhyNow] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const queryTitle = params.get("title");
+        if (queryTitle) {
+          setTitle(queryTitle);
+        }
+      } catch {
+        // Fallback gracefully
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
