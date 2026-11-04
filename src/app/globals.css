@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
+  --background: #fcfcfc;
   --surface: #ffffff;
   --foreground: #0f172a;
-  --muted: #475569;
-  --border: #e2e8f0;
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
+  --muted: #4b5563;
+  --border: #e5e7eb;
+  --accent: #0f172a;
+  --accent-hover: #1f2937;
   --accent-foreground: #ffffff;
-  --accent-soft: #eff6ff;
-  --accent-border: #bfdbfe;
+  --accent-soft: #f3f4f6;
+  --accent-border: #e5e7eb;
 }
 
 @theme inline {
@@ -36,10 +36,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Atmospheric subtle ambient glow that gives canvas depth without gimmicks */
-.hero-glow {
-  background: radial-gradient(circle 800px at 50% -120px, rgba(37, 99, 235, 0.08), rgba(248, 250, 252, 0) 70%);
-}
 
 * {
   border-color: var(--border);
