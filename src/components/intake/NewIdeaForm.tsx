@@ -356,7 +356,7 @@ export default function NewIdeaForm() {
               className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-center text-xs font-semibold text-zinc-900 shadow-2xs"
             >
               <div className="flex items-center justify-center gap-2.5">
-                <span className="h-2 w-2 animate-ping rounded-full bg-blue-600" />
+                <span className="h-2 w-2 animate-ping rounded-full bg-emerald-600" />
                 <span>{progressStep}</span>
               </div>
             </div>
