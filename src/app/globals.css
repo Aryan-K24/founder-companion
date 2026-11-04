@@ -1,17 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
+  --background: #f8fafc;
   --surface: #ffffff;
-  --foreground: #09090b;
-  --muted: #52525b;
-  --border: #e4e4e7;
-  --accent: #09090b;
-  --accent-hover: #18181b;
+  --foreground: #0f172a;
+  --muted: #475569;
+  --border: #e2e8f0;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
   --accent-foreground: #ffffff;
-  --accent-soft: #f4f4f5;
-  --accent-border: #e4e4e7;
-  --primary-blue: #2563eb;
+  --accent-soft: #eff6ff;
+  --accent-border: #bfdbfe;
 }
 
 @theme inline {
@@ -25,7 +24,6 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-soft: var(--accent-soft);
   --color-accent-border: var(--accent-border);
-  --color-primary-blue: var(--primary-blue);
   --font-sans: var(--font-inter);
   --font-display: var(--font-inter);
 }
@@ -38,16 +36,37 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle modern tech grid */
-.bg-grid-slate-pattern {
-  background-size: 32px 32px;
+/* Layered background engineering grid with smooth fade mask */
+.bg-mesh-grid {
+  background-size: 40px 40px;
   background-image: 
-    radial-gradient(circle, rgba(161, 161, 170, 0.25) 1px, transparent 1px);
+    linear-gradient(to right, rgba(148, 163, 184, 0.18) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.18) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 60%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 60%, transparent 100%);
 }
 
-/* Soft obsidian ambient glow */
-.hero-glow {
-  background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(37, 99, 235, 0.06), transparent 70%);
+/* Radiant ambient lighting orbs */
+.hero-ambient-glow {
+  background: 
+    radial-gradient(circle 450px at 50% 50px, rgba(99, 102, 241, 0.14), transparent),
+    radial-gradient(circle 350px at 20% 120px, rgba(59, 130, 246, 0.12), transparent),
+    radial-gradient(circle 350px at 80% 120px, rgba(168, 85, 247, 0.10), transparent);
+}
+
+/* Floating shadow for dashboard previews */
+.preview-shadow {
+  box-shadow: 
+    0 0 0 1px rgba(226, 232, 240, 0.8),
+    0 20px 60px -15px rgba(30, 41, 59, 0.15),
+    0 10px 30px -10px rgba(99, 102, 241, 0.10);
+}
+
+/* Glassmorphism panel */
+.glass-surface {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 * {
