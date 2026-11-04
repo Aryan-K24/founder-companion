@@ -118,7 +118,7 @@ export default function NewIdeaForm() {
       <div
         role="tablist"
         aria-label="Select starting point"
-        className="mb-8 grid grid-cols-2 gap-3 rounded-2xl border border-slate-200/90 bg-white p-1.5 shadow-xs"
+        className="mb-8 grid grid-cols-2 gap-3 rounded-2xl border border-zinc-200/90 bg-white p-1.5 shadow-xs"
       >
         <button
           type="button"
@@ -128,8 +128,8 @@ export default function NewIdeaForm() {
           onClick={() => setTrack("idea")}
           className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all ${
             track === "idea"
-              ? "bg-teal-700 text-white shadow-2xs"
-              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-zinc-900 text-white shadow-2xs"
+              : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950"
           }`}
         >
           <Lightbulb className="h-4 w-4" aria-hidden="true" />
@@ -144,8 +144,8 @@ export default function NewIdeaForm() {
           onClick={() => setTrack("vision")}
           className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all ${
             track === "vision"
-              ? "bg-teal-700 text-white shadow-2xs"
-              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-zinc-900 text-white shadow-2xs"
+              : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950"
           }`}
         >
           <Compass className="h-4 w-4" aria-hidden="true" />
@@ -157,15 +157,15 @@ export default function NewIdeaForm() {
       <div
         id="track-panel"
         role="tabpanel"
-        className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs sm:p-9"
+        className="rounded-3xl border border-zinc-200/90 bg-white p-6 shadow-xs sm:p-9"
       >
-        <div className="mb-7 pb-6 border-b border-slate-100">
-          <h2 className="font-display text-xl font-bold text-slate-900">
+        <div className="mb-7 pb-6 border-b border-zinc-100">
+          <h2 className="font-display text-xl font-bold text-zinc-950">
             {track === "idea"
               ? "Stress-Test a Specific Product Concept"
               : "Explore an Observed Industry Headache"}
           </h2>
-          <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-slate-600">
+          <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-zinc-600">
             {track === "idea"
               ? "Detail your product vision. We will cross-reference live competitors across Global and Indian markets, audit past post-mortems, and identify market entry wedges."
               : "Describe the observed friction point. We will analyze why existing workarounds fall short and synthesize viable beachhead entry angles."}
@@ -187,7 +187,7 @@ export default function NewIdeaForm() {
           <div>
             <label
               htmlFor="title"
-              className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+              className="block text-xs font-bold uppercase tracking-wider text-zinc-700"
             >
               Working Title or Project Name *
             </label>
@@ -199,7 +199,7 @@ export default function NewIdeaForm() {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Modern Cooler with Built-in Wheels, DogPals Community, CreatorFlow"
               disabled={loading}
-              className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
+              className="mt-2 block w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-3.5 py-2.5 text-sm text-zinc-900 shadow-2xs placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
             />
           </div>
 
@@ -209,7 +209,7 @@ export default function NewIdeaForm() {
               <div>
                 <label
                   htmlFor="problemStatement"
-                  className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+                  className="block text-xs font-bold uppercase tracking-wider text-zinc-700"
                 >
                   The Observed Headache *
                 </label>
@@ -224,14 +224,14 @@ export default function NewIdeaForm() {
                   }}
                   placeholder="What is broken, frustratingly slow, or unnecessarily expensive today?"
                   disabled={loading}
-                  className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
+                  className="mt-2 block w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-3.5 py-2.5 text-sm text-zinc-900 shadow-2xs placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="whyNow"
-                  className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+                  className="block text-xs font-bold uppercase tracking-wider text-zinc-700"
                 >
                   Why Now? What has changed?
                 </label>
@@ -242,7 +242,7 @@ export default function NewIdeaForm() {
                   onChange={(e) => setWhyNow(e.target.value)}
                   placeholder="e.g. Advancements in roto-molded insulation, new regulatory shifts, remote work expansion"
                   disabled={loading}
-                  className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
+                  className="mt-2 block w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-3.5 py-2.5 text-sm text-zinc-900 shadow-2xs placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
                 />
               </div>
             </>
@@ -250,7 +250,7 @@ export default function NewIdeaForm() {
             <div>
               <label
                 htmlFor="pitch"
-                className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+                className="block text-xs font-bold uppercase tracking-wider text-zinc-700"
               >
                 The Pitch (One-liner) *
               </label>
@@ -262,7 +262,7 @@ export default function NewIdeaForm() {
                 onChange={(e) => setPitch(e.target.value)}
                 placeholder="What does the product do in plain English, and what is its primary benefit?"
                 disabled={loading}
-                className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
+                className="mt-2 block w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-3.5 py-2.5 text-sm text-zinc-900 shadow-2xs placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
               />
             </div>
           )}
@@ -272,11 +272,11 @@ export default function NewIdeaForm() {
             <div className="flex items-center justify-between">
               <label
                 htmlFor="targetCustomer"
-                className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+                className="block text-xs font-bold uppercase tracking-wider text-zinc-700"
               >
                 Target Customer (Who buys?) *
               </label>
-              <span className="text-[11px] text-slate-500 font-medium">Avoid generic answers like &ldquo;Everyone&rdquo;</span>
+              <span className="text-[11px] text-zinc-500 font-medium">Avoid generic answers like &ldquo;Everyone&rdquo;</span>
             </div>
             <input
               id="targetCustomer"
@@ -286,7 +286,7 @@ export default function NewIdeaForm() {
               onChange={(e) => setTargetCustomer(e.target.value)}
               placeholder="e.g. Weekend campers carrying 20kg gear, Solo boutique design agencies"
               disabled={loading}
-              className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
+              className="mt-2 block w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-3.5 py-2.5 text-sm text-zinc-900 shadow-2xs placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
             />
           </div>
 
@@ -294,7 +294,7 @@ export default function NewIdeaForm() {
           <div>
             <label
               htmlFor="currentWorkaround"
-              className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+              className="block text-xs font-bold uppercase tracking-wider text-zinc-700"
             >
               Current Workaround (How is it handled today?)
             </label>
@@ -305,7 +305,7 @@ export default function NewIdeaForm() {
               onChange={(e) => setCurrentWorkaround(e.target.value)}
               placeholder="e.g. Dragging heavy boxes, multiple trips with cheap bags, Excel sheets"
               disabled={loading}
-              className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
+              className="mt-2 block w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-3.5 py-2.5 text-sm text-zinc-900 shadow-2xs placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
             />
           </div>
 
@@ -313,7 +313,7 @@ export default function NewIdeaForm() {
           <div>
             <label
               htmlFor="monetization"
-              className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+              className="block text-xs font-bold uppercase tracking-wider text-zinc-700"
             >
               Planned Revenue Model
             </label>
@@ -324,7 +324,7 @@ export default function NewIdeaForm() {
               onChange={(e) => setMonetization(e.target.value)}
               placeholder="e.g. Direct-to-consumer at $199 with 55% gross margin, $49/mo subscription"
               disabled={loading}
-              className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
+              className="mt-2 block w-full rounded-xl border border-zinc-200 bg-zinc-50/50 px-3.5 py-2.5 text-sm text-zinc-900 shadow-2xs placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
             />
           </div>
 
@@ -333,7 +333,7 @@ export default function NewIdeaForm() {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-6 py-3.5 text-sm font-semibold text-white shadow-xs transition-all hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-3.5 text-sm font-semibold text-white shadow-xs transition-all hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {loading ? (
                 <>
@@ -353,10 +353,10 @@ export default function NewIdeaForm() {
           {loading && (
             <div
               aria-live="polite"
-              className="rounded-xl border border-teal-200 bg-teal-50/80 p-4 text-center text-xs font-semibold text-teal-900 shadow-2xs"
+              className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-center text-xs font-semibold text-zinc-900 shadow-2xs"
             >
               <div className="flex items-center justify-center gap-2.5">
-                <span className="h-2 w-2 animate-ping rounded-full bg-teal-600" />
+                <span className="h-2 w-2 animate-ping rounded-full bg-blue-600" />
                 <span>{progressStep}</span>
               </div>
             </div>

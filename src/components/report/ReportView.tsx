@@ -48,17 +48,17 @@ export default function ReportView({ idea }: ReportViewProps) {
 
   if (!report) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center shadow-xs">
+      <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-12 text-center shadow-xs">
         <AlertTriangle className="mx-auto h-8 w-8 text-amber-500" />
-        <h3 className="mt-3 font-display text-lg font-bold text-slate-900">
+        <h3 className="mt-3 font-display text-lg font-bold text-zinc-950">
           No Report Available
         </h3>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-zinc-600">
           This idea has not been evaluated yet.
         </p>
         <Link
           href="/idea/new"
-          className="mt-5 inline-flex items-center gap-1.5 rounded-xl bg-teal-700 px-5 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-teal-800"
+          className="mt-5 inline-flex items-center gap-1.5 rounded-xl bg-zinc-900 px-5 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-zinc-800"
         >
           Run New Analysis &rarr;
         </Link>
@@ -107,10 +107,10 @@ export default function ReportView({ idea }: ReportViewProps) {
         };
       case "VIABLE_WITH_PIVOT":
         return {
-          icon: <GitBranch className="h-5 w-5 text-teal-700" aria-hidden="true" />,
+          icon: <GitBranch className="h-5 w-5 text-blue-700" aria-hidden="true" />,
           label: "VIABLE WITH ASYMMETRIC PIVOT",
-          bg: "bg-teal-50 border-teal-200 text-teal-950",
-          tagBg: "bg-teal-100 text-teal-800",
+          bg: "bg-blue-50 border-blue-200 text-blue-950",
+          tagBg: "bg-blue-100 text-blue-800",
         };
       case "COMPELLING_WEDGE":
         return {
@@ -131,7 +131,7 @@ export default function ReportView({ idea }: ReportViewProps) {
       case "MEDIUM":
         return "bg-yellow-50 text-yellow-800 border-yellow-200";
       case "LOW":
-        return "bg-slate-100 text-slate-700 border-slate-200";
+        return "bg-zinc-100 text-zinc-700 border-zinc-200";
     }
   };
 
@@ -163,30 +163,30 @@ export default function ReportView({ idea }: ReportViewProps) {
       )}
 
       {/* Top Header Card */}
-      <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-xs">
+      <div className="rounded-2xl border border-zinc-200/90 bg-white p-6 sm:p-7 shadow-xs">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-teal-700">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600">
                 Strategic Concept Brief
               </span>
-              <span className="rounded-full border border-teal-200 bg-teal-50 px-2.5 py-0.5 text-[11px] font-bold text-teal-800">
+              <span className="rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-0.5 text-[11px] font-bold text-zinc-800">
                 {isHardware ? "Physical Product / Hardware" : "Software / SaaS"}
               </span>
             </div>
 
-            <h1 className="font-display mt-1.5 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h1 className="font-display mt-1.5 text-2xl font-bold tracking-tight text-zinc-950 sm:text-3xl">
               {idea.title}
             </h1>
-            <p className="mt-1 text-sm text-slate-600">
-              Target Customer: <span className="font-medium text-slate-900">{idea.targetCustomer}</span>
+            <p className="mt-1 text-sm text-zinc-600">
+              Target Customer: <span className="font-medium text-zinc-950">{idea.targetCustomer}</span>
             </p>
           </div>
 
           {/* Action Box */}
-          <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 sm:p-4">
-            <div className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold text-slate-800">
-              <HelpCircle className="h-3.5 w-3.5 text-slate-500" />
+          <div className="rounded-xl border border-zinc-200 bg-zinc-50/70 p-3.5 sm:p-4">
+            <div className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold text-zinc-800">
+              <HelpCircle className="h-3.5 w-3.5 text-zinc-500" />
               <span>Next Decision for This Concept:</span>
             </div>
 
@@ -196,8 +196,8 @@ export default function ReportView({ idea }: ReportViewProps) {
                 title="Save to your workspace as an active project you want to build"
                 className={`rounded-lg px-3.5 py-2 text-xs font-semibold transition-all ${
                   currentStatus === "active_pursuit"
-                    ? "bg-emerald-700 text-white shadow-2xs"
-                    : "border border-slate-200 bg-white text-slate-700 hover:border-emerald-600 hover:text-emerald-800"
+                    ? "bg-zinc-900 text-white shadow-2xs"
+                    : "border border-zinc-200 bg-white text-zinc-700 hover:border-zinc-900 hover:text-zinc-950"
                 }`}
               >
                 ✓ Active Pursuit
@@ -208,8 +208,8 @@ export default function ReportView({ idea }: ReportViewProps) {
                 title="Mark this idea as too risky and move it to your archives"
                 className={`rounded-lg px-3.5 py-2 text-xs font-semibold transition-all ${
                   currentStatus === "killed"
-                    ? "bg-slate-800 text-white shadow-2xs"
-                    : "border border-slate-200 bg-white text-slate-700 hover:border-rose-600 hover:text-rose-800"
+                    ? "bg-zinc-900 text-white shadow-2xs"
+                    : "border border-zinc-200 bg-white text-zinc-700 hover:border-rose-600 hover:text-rose-800"
                 }`}
               >
                 ✕ Archive (High Risk)
@@ -218,7 +218,7 @@ export default function ReportView({ idea }: ReportViewProps) {
               <button
                 onClick={() => setPivotModalOpen(true)}
                 title="Clone this idea and test a different, better niche angle"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-teal-200 bg-teal-50 px-3.5 py-2 text-xs font-semibold text-teal-800 transition-colors hover:bg-teal-700 hover:text-white"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-800 transition-colors hover:bg-zinc-900 hover:text-white"
               >
                 <GitBranch className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>Try a Different Angle (Pivot)</span>
@@ -232,7 +232,7 @@ export default function ReportView({ idea }: ReportViewProps) {
       <div
         role="tablist"
         aria-label="Report sections"
-        className="grid grid-cols-3 gap-2 rounded-xl border border-slate-200/90 bg-white p-1.5 shadow-2xs"
+        className="grid grid-cols-3 gap-2 rounded-xl border border-zinc-200/90 bg-white p-1.5 shadow-2xs"
       >
         <button
           type="button"
@@ -241,8 +241,8 @@ export default function ReportView({ idea }: ReportViewProps) {
           onClick={() => setActiveTab("verdict")}
           className={`flex items-center justify-center gap-2 rounded-lg py-3 text-xs sm:text-sm font-semibold transition-all ${
             activeTab === "verdict"
-              ? "bg-teal-700 text-white shadow-2xs"
-              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-zinc-900 text-white shadow-2xs"
+              : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950"
           }`}
         >
           <Award className="h-4 w-4" />
@@ -256,8 +256,8 @@ export default function ReportView({ idea }: ReportViewProps) {
           onClick={() => setActiveTab("competition")}
           className={`flex items-center justify-center gap-2 rounded-lg py-3 text-xs sm:text-sm font-semibold transition-all ${
             activeTab === "competition"
-              ? "bg-teal-700 text-white shadow-2xs"
-              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-zinc-900 text-white shadow-2xs"
+              : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950"
           }`}
         >
           <Layers className="h-4 w-4" />
@@ -271,8 +271,8 @@ export default function ReportView({ idea }: ReportViewProps) {
           onClick={() => setActiveTab("playbook")}
           className={`flex items-center justify-center gap-2 rounded-lg py-3 text-xs sm:text-sm font-semibold transition-all ${
             activeTab === "playbook"
-              ? "bg-teal-700 text-white shadow-2xs"
-              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-zinc-900 text-white shadow-2xs"
+              : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950"
           }`}
         >
           <Target className="h-4 w-4" />
@@ -284,28 +284,28 @@ export default function ReportView({ idea }: ReportViewProps) {
       {activeTab === "verdict" && (
         <div className="space-y-6">
           {/* Executive Bottom Line */}
-          <div className="rounded-2xl border-2 border-teal-700/80 bg-white p-6 sm:p-8 shadow-xs">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-700">
+          <div className="rounded-2xl border-2 border-zinc-900 bg-white p-6 sm:p-8 shadow-xs">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-700">
               <Compass className="h-4 w-4" />
               <span>THE BOTTOM LINE: EXECUTIVE EVALUATION</span>
             </div>
 
             <div className="mt-3.5">
-              <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">
+              <h2 className="font-display text-xl sm:text-2xl font-bold text-zinc-950">
                 {report.bottomLine?.isGoodIdea || report.verdictHeadline}
               </h2>
 
-              <p className="mt-3 text-sm leading-relaxed text-slate-700 whitespace-pre-line">
+              <p className="mt-3 text-sm leading-relaxed text-zinc-700 whitespace-pre-line">
                 {report.bottomLine?.inPlainEnglish || report.executiveSummary}
               </p>
             </div>
 
             {report.bottomLine?.immediateNextStep && (
-              <div className="mt-5 flex items-start gap-3 rounded-xl border border-teal-200 bg-teal-50/70 p-4 text-xs">
-                <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-teal-700 font-bold" />
+              <div className="mt-5 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/70 p-4 text-xs">
+                <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-blue-700 font-bold" />
                 <div>
-                  <span className="font-bold text-teal-900 uppercase tracking-wider">Immediate Recommended Next Step: </span>
-                  <span className="text-slate-800 font-medium">{report.bottomLine.immediateNextStep}</span>
+                  <span className="font-bold text-blue-900 uppercase tracking-wider">Immediate Recommended Next Step: </span>
+                  <span className="text-zinc-800 font-medium">{report.bottomLine.immediateNextStep}</span>
                 </div>
               </div>
             )}
@@ -319,23 +319,23 @@ export default function ReportView({ idea }: ReportViewProps) {
                 {badge.label}
               </span>
             </div>
-            <h3 className="mt-2.5 font-display text-lg font-bold text-slate-900">
+            <h3 className="mt-2.5 font-display text-lg font-bold text-zinc-950">
               {report.verdictHeadline}
             </h3>
-            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-800 whitespace-pre-line">
+            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-zinc-800 whitespace-pre-line">
               {report.executiveSummary}
             </p>
           </div>
 
           {/* Dealbreaker Flags */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs">
+          <div className="rounded-2xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-xs">
             <div className="flex items-center gap-2">
               <ShieldAlert className="h-5 w-5 text-amber-700" aria-hidden="true" />
-              <h3 className="font-display text-lg font-semibold text-slate-900">
+              <h3 className="font-display text-lg font-semibold text-zinc-950">
                 Identified Roadblocks & Dealbreaker Risks
               </h3>
             </div>
-            <p className="mt-1 text-xs text-slate-600">
+            <p className="mt-1 text-xs text-zinc-600">
               Critical structural challenges that require clear mitigation before capital commitment.
             </p>
 
@@ -343,10 +343,10 @@ export default function ReportView({ idea }: ReportViewProps) {
               {report.dealbreakerFlags.map((item, idx) => (
                 <div
                   key={idx}
-                  className="rounded-xl border border-slate-200 bg-slate-50/60 p-4.5"
+                  className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-4.5"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <h4 className="font-semibold text-slate-900 text-sm">
+                    <h4 className="font-semibold text-zinc-950 text-sm">
                       {item.flag}
                     </h4>
                     <span
@@ -357,7 +357,7 @@ export default function ReportView({ idea }: ReportViewProps) {
                       {item.severity}
                     </span>
                   </div>
-                  <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                  <p className="mt-2 text-xs leading-relaxed text-zinc-600">
                     {item.reasoning}
                   </p>
                 </div>
@@ -371,14 +371,14 @@ export default function ReportView({ idea }: ReportViewProps) {
       {activeTab === "competition" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Active Competitors */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs">
+          <div className="rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-xs">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-emerald-700" aria-hidden="true" />
-              <h3 className="font-display text-lg font-semibold text-slate-900">
+              <TrendingUp className="h-5 w-5 text-zinc-900" aria-hidden="true" />
+              <h3 className="font-display text-lg font-semibold text-zinc-950">
                 Market Leaders & Active Incumbents
               </h3>
             </div>
-            <p className="mt-1 text-xs text-slate-600">
+            <p className="mt-1 text-xs text-zinc-600">
               Established players currently capturing revenue, their primary defensibility, and vulnerable gaps.
             </p>
 
@@ -386,17 +386,17 @@ export default function ReportView({ idea }: ReportViewProps) {
               {report.activeCompetitors.map((comp, idx) => (
                 <div
                   key={idx}
-                  className="rounded-xl border border-slate-200 bg-slate-50/60 p-4.5 text-xs transition-colors hover:bg-slate-50"
+                  className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-4.5 text-xs transition-colors hover:bg-zinc-50"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 font-semibold text-slate-900 text-sm">
+                    <div className="flex items-center gap-1.5 font-semibold text-zinc-950 text-sm">
                       <span>{comp.name}</span>
                       {comp.url && (
                         <a
                           href={comp.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-slate-400 hover:text-teal-700"
+                          className="text-zinc-400 hover:text-zinc-950"
                           aria-label={`Visit ${comp.name} website`}
                         >
                           <ExternalLink className="h-3 w-3" />
@@ -407,7 +407,7 @@ export default function ReportView({ idea }: ReportViewProps) {
                       className={`rounded-full px-2.5 py-0.5 font-medium text-[11px] ${
                         comp.marketPosition.toLowerCase().includes("india")
                           ? "border border-amber-300 bg-amber-50 text-amber-900 font-semibold"
-                          : "border border-teal-200 bg-teal-50 text-teal-800 font-semibold"
+                          : "border border-blue-200 bg-blue-50 text-blue-900 font-semibold"
                       }`}
                     >
                       {comp.marketPosition.toLowerCase().includes("india") ? "🇮🇳 " : "🌐 "}
@@ -416,13 +416,13 @@ export default function ReportView({ idea }: ReportViewProps) {
                   </div>
 
                   <div className="mt-3.5 space-y-2">
-                    <div className="rounded-lg bg-emerald-50/60 p-2 border border-emerald-100">
-                      <span className="font-semibold text-emerald-900">Defensible Advantage: </span>
-                      <span className="text-slate-700">{comp.moat}</span>
+                    <div className="rounded-lg bg-zinc-100 p-2 border border-zinc-200">
+                      <span className="font-semibold text-zinc-950">Defensible Advantage: </span>
+                      <span className="text-zinc-700">{comp.moat}</span>
                     </div>
-                    <div className="rounded-lg bg-rose-50/50 p-2 border border-rose-100">
+                    <div className="rounded-lg bg-rose-50/60 p-2 border border-rose-100">
                       <span className="font-semibold text-rose-900">Structural Vulnerability: </span>
-                      <span className="text-slate-700">{comp.vulnerability}</span>
+                      <span className="text-zinc-700">{comp.vulnerability}</span>
                     </div>
                   </div>
                 </div>
@@ -431,14 +431,14 @@ export default function ReportView({ idea }: ReportViewProps) {
           </div>
 
           {/* Historical Case Studies & Post-Mortems */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs">
+          <div className="rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-xs">
             <div className="flex items-center gap-2">
-              <History className="h-5 w-5 text-amber-700" aria-hidden="true" />
-              <h3 className="font-display text-lg font-semibold text-slate-900">
+              <History className="h-5 w-5 text-amber-800" aria-hidden="true" />
+              <h3 className="font-display text-lg font-semibold text-zinc-950">
                 Historical Case Studies & Post-Mortems
               </h3>
             </div>
-            <p className="mt-1 text-xs text-slate-600">
+            <p className="mt-1 text-xs text-zinc-600">
               Past startups and crowdfunded initiatives that tackled this concept, capital deployed, and root-cause failure points.
             </p>
 
@@ -446,34 +446,34 @@ export default function ReportView({ idea }: ReportViewProps) {
               {report.graveyardStartups.map((dead, idx) => (
                 <div
                   key={idx}
-                  className="rounded-xl border border-slate-200 bg-slate-50/60 p-4.5 text-xs transition-colors hover:bg-slate-50"
+                  className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-4.5 text-xs transition-colors hover:bg-zinc-50"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 font-semibold text-slate-900 text-sm">
+                    <div className="flex items-center gap-1.5 font-semibold text-zinc-950 text-sm">
                       <span>{dead.name}</span>
                       {dead.sourceUrl && (
                         <a
                           href={dead.sourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-slate-400 hover:text-rose-700"
+                          className="text-zinc-400 hover:text-rose-700"
                           aria-label={`Read ${dead.name} post-mortem`}
                         >
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       )}
                     </div>
-                    <span className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 font-semibold text-slate-700 text-[11px]">
+                    <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 font-semibold text-zinc-700 text-[11px]">
                       Concluded {dead.yearEnded} • {dead.fundingBurned || "Early Stage"}
                     </span>
                   </div>
 
                   <div className="mt-3.5 space-y-2">
-                    <div className="rounded-lg bg-white p-2 border border-slate-200/80">
-                      <span className="font-semibold text-slate-800">Initial Premise: </span>
-                      <span className="text-slate-600">{dead.seductivePromise}</span>
+                    <div className="rounded-lg bg-white p-2 border border-zinc-200/80">
+                      <span className="font-semibold text-zinc-800">Initial Premise: </span>
+                      <span className="text-zinc-600">{dead.seductivePromise}</span>
                     </div>
-                    <div className="rounded-lg bg-rose-50/60 p-2 border border-rose-100">
+                    <div className="rounded-lg bg-rose-50/80 p-2 border border-rose-100">
                       <span className="font-semibold text-rose-950">Root-Cause Failure Mode: </span>
                       <span className="text-rose-900 font-medium">{dead.fatalTrap}</span>
                     </div>
@@ -489,31 +489,31 @@ export default function ReportView({ idea }: ReportViewProps) {
       {activeTab === "playbook" && (
         <div className="space-y-6">
           {/* Survival Strategy */}
-          <div className="rounded-2xl border border-teal-200/80 bg-white p-6 sm:p-8 shadow-xs">
+          <div className="rounded-2xl border border-zinc-300 bg-white p-6 sm:p-8 shadow-xs">
             <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-teal-700" aria-hidden="true" />
-              <h3 className="font-display text-lg font-semibold text-slate-900">
+              <Target className="h-5 w-5 text-zinc-900" aria-hidden="true" />
+              <h3 className="font-display text-lg font-semibold text-zinc-950">
                 Actionable Market Entry Strategy & Wedge
               </h3>
             </div>
-            <p className="mt-1 text-xs text-slate-600">
+            <p className="mt-1 text-xs text-zinc-600">
               Avoid fighting incumbents head-on. Own a specific, underserved customer segment with distinct unit economics.
             </p>
 
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-5">
-                <span className="text-xs font-bold uppercase tracking-wider text-teal-800">
+              <div className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-5">
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-800">
                   Recommended Beachhead Angle
                 </span>
-                <p className="mt-1.5 font-semibold text-slate-900 text-sm">
+                <p className="mt-1.5 font-semibold text-zinc-950 text-sm">
                   {report.survivalWedge.strategy}
                 </p>
-                <p className="mt-3 text-xs leading-relaxed text-slate-600">
+                <p className="mt-3 text-xs leading-relaxed text-zinc-600">
                   {report.survivalWedge.unfairWedge}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-rose-200 bg-rose-50/30 p-5">
+              <div className="rounded-xl border border-rose-200 bg-rose-50/40 p-5">
                 <span className="text-xs font-bold uppercase tracking-wider text-rose-800">
                   Critical Pitfall to Avoid
                 </span>
@@ -521,10 +521,10 @@ export default function ReportView({ idea }: ReportViewProps) {
                   {report.survivalWedge.deadlyMistakeToAvoid}
                 </p>
                 <div className="mt-4 border-t border-rose-200/60 pt-3">
-                  <span className="text-[11px] font-semibold uppercase text-slate-600">
+                  <span className="text-[11px] font-semibold uppercase text-zinc-600">
                     Suggested Pricing Architecture:
                   </span>
-                  <p className="mt-0.5 text-xs font-medium text-slate-900">
+                  <p className="mt-0.5 text-xs font-medium text-zinc-950">
                     {report.survivalWedge.proposedPricingModel}
                   </p>
                 </div>
@@ -533,14 +533,14 @@ export default function ReportView({ idea }: ReportViewProps) {
           </div>
 
           {/* Customer Questions */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs">
+          <div className="rounded-2xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-xs">
             <div className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-teal-700" aria-hidden="true" />
-              <h3 className="font-display text-lg font-semibold text-slate-900">
+              <MessageSquare className="h-5 w-5 text-zinc-900" aria-hidden="true" />
+              <h3 className="font-display text-lg font-semibold text-zinc-950">
                 The Mom Test Discovery Framework
               </h3>
             </div>
-            <p className="mt-1 text-xs text-slate-600">
+            <p className="mt-1 text-xs text-zinc-600">
               Never ask potential customers &ldquo;Would you buy this?&rdquo; (courtesy bias produces false positives). Interrogate their past behaviors:
             </p>
 
@@ -548,22 +548,22 @@ export default function ReportView({ idea }: ReportViewProps) {
               {report.momTestQuestions.map((q, idx) => (
                 <div
                   key={idx}
-                  className="rounded-xl border border-slate-200 bg-slate-50/60 p-5 text-xs"
+                  className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-5 text-xs"
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-700 text-xs font-bold text-white shadow-2xs">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-xs font-bold text-white shadow-2xs">
                       {idx + 1}
                     </span>
-                    <span className="font-semibold text-slate-900 text-sm">
+                    <span className="font-semibold text-zinc-950 text-sm">
                       Hypothesis Tested: {q.hypothesis}
                     </span>
                   </div>
 
                   <div className="mt-3.5 pl-8 space-y-2">
-                    <p className="font-medium text-teal-800 text-sm bg-teal-50/70 p-2.5 rounded-lg border border-teal-100">
+                    <p className="font-medium text-zinc-950 text-sm bg-zinc-100 p-2.5 rounded-lg border border-zinc-200">
                       <strong>Verbatim Prompt:</strong> &ldquo;{q.questionToAsk}&rdquo;
                     </p>
-                    <p className="text-slate-600 pt-1">
+                    <p className="text-zinc-600 pt-1">
                       <strong className="text-rose-800">Trap to Avoid: </strong>
                       {q.trapToAvoid}
                     </p>
@@ -581,19 +581,19 @@ export default function ReportView({ idea }: ReportViewProps) {
           role="dialog"
           aria-modal="true"
           aria-labelledby="pivot-title"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/60 p-4 backdrop-blur-xs"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
-            <h3 id="pivot-title" className="font-display text-lg font-bold text-slate-900">
+          <div className="w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl">
+            <h3 id="pivot-title" className="font-display text-lg font-bold text-zinc-950">
               Try a Different Angle (Create Pivot)
             </h3>
-            <p className="mt-1 text-xs text-slate-600">
+            <p className="mt-1 text-xs text-zinc-600">
               Branch this concept and focus it on the recommended beachhead angle.
             </p>
 
             <div className="mt-5 space-y-4">
               <div>
-                <label htmlFor="pivot-name" className="block text-xs font-semibold text-slate-900">
+                <label htmlFor="pivot-name" className="block text-xs font-semibold text-zinc-950">
                   Pivoted Idea Title
                 </label>
                 <input
@@ -601,12 +601,12 @@ export default function ReportView({ idea }: ReportViewProps) {
                   type="text"
                   value={pivotTitle}
                   onChange={(e) => setPivotTitle(e.target.value)}
-                  className="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 shadow-2xs focus:border-teal-700 focus:outline-none"
+                  className="mt-1.5 block w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs text-zinc-950 shadow-2xs focus:border-zinc-900 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label htmlFor="pivot-wedge" className="block text-xs font-semibold text-slate-900">
+                <label htmlFor="pivot-wedge" className="block text-xs font-semibold text-zinc-950">
                   Target Beachhead Focus (One-liner)
                 </label>
                 <textarea
@@ -614,7 +614,7 @@ export default function ReportView({ idea }: ReportViewProps) {
                   rows={3}
                   value={pivotPitch}
                   onChange={(e) => setPivotPitch(e.target.value)}
-                  className="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 shadow-2xs focus:border-teal-700 focus:outline-none"
+                  className="mt-1.5 block w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs text-zinc-950 shadow-2xs focus:border-zinc-900 focus:outline-none"
                 />
               </div>
             </div>
@@ -623,14 +623,14 @@ export default function ReportView({ idea }: ReportViewProps) {
               <button
                 type="button"
                 onClick={() => setPivotModalOpen(false)}
-                className="rounded-lg border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                className="rounded-lg border border-zinc-200 px-4 py-2 text-xs font-semibold text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleCreatePivot}
-                className="rounded-lg bg-teal-700 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-teal-800"
+                className="rounded-lg bg-zinc-900 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-zinc-800"
               >
                 Save as New Version
               </button>

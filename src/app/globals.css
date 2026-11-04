@@ -1,16 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
+  --background: #fafafa;
   --surface: #ffffff;
-  --foreground: #090d16;
-  --muted: #475569;
-  --border: #e2e8f0;
-  --accent: #0f766e;
-  --accent-hover: #0d5f58;
+  --foreground: #09090b;
+  --muted: #52525b;
+  --border: #e4e4e7;
+  --accent: #09090b;
+  --accent-hover: #18181b;
   --accent-foreground: #ffffff;
-  --accent-soft: #f0fdf9;
-  --accent-border: #ccfbf1;
+  --accent-soft: #f4f4f5;
+  --accent-border: #e4e4e7;
+  --primary-blue: #2563eb;
 }
 
 @theme inline {
@@ -24,8 +25,9 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-soft: var(--accent-soft);
   --color-accent-border: var(--accent-border);
+  --color-primary-blue: var(--primary-blue);
   --font-sans: var(--font-inter);
-  --font-display: var(--font-space-grotesk);
+  --font-display: var(--font-inter);
 }
 
 body {
@@ -36,23 +38,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle dot grid pattern for high-trust institutional feel */
+/* Subtle modern tech grid */
 .bg-grid-slate-pattern {
   background-size: 32px 32px;
   background-image: 
-    radial-gradient(circle, rgba(148, 163, 184, 0.22) 1px, transparent 1px);
+    radial-gradient(circle, rgba(161, 161, 170, 0.25) 1px, transparent 1px);
 }
 
-/* Ambient hero glow */
+/* Soft obsidian ambient glow */
 .hero-glow {
-  background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(15, 118, 110, 0.09), transparent 70%);
-}
-
-/* Glass card styling */
-.glass-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(37, 99, 235, 0.06), transparent 70%);
 }
 
 * {

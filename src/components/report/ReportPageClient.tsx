@@ -22,7 +22,7 @@ export default function ReportPageClient({ id }: ReportPageClientProps) {
   if (idea === undefined) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-teal-700" />
+        <Loader2 className="h-6 w-6 animate-spin text-zinc-900" />
       </div>
     );
   }
@@ -39,7 +39,7 @@ export default function ReportPageClient({ id }: ReportPageClientProps) {
         <div className="mt-6">
           <Link
             href="/workspace"
-            className="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-semibold text-white shadow-2xs hover:bg-teal-800"
+            className="inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-xs font-semibold text-white shadow-2xs hover:bg-zinc-800"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Workspace

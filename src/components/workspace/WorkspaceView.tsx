@@ -55,9 +55,9 @@ export default function WorkspaceView() {
     badgeColor: string,
     headerColor: string
   ) => (
-    <div className="flex flex-col rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs">
+    <div className="flex flex-col rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs">
       {/* Column Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+      <div className="flex items-center justify-between pb-4 border-b border-zinc-100">
         <div className="flex items-center gap-2">
           {icon}
           <h2 className={`font-display text-sm font-bold tracking-tight ${headerColor}`}>
@@ -74,7 +74,7 @@ export default function WorkspaceView() {
       {/* Column Content */}
       <div className="mt-4 flex flex-1 flex-col gap-3 min-h-[320px]">
         {items.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 p-6 text-center text-xs text-slate-600">
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-zinc-200 p-6 text-center text-xs text-zinc-500">
             <p>No concepts in this stage</p>
           </div>
         ) : (
@@ -83,43 +83,43 @@ export default function WorkspaceView() {
             return (
               <div
                 key={idea.id}
-                className="group relative flex flex-col justify-between rounded-xl border border-slate-200 bg-slate-50/60 p-4 shadow-2xs transition-all hover:border-teal-600 hover:bg-white hover:shadow-xs"
+                className="group relative flex flex-col justify-between rounded-xl border border-zinc-200 bg-zinc-50/60 p-4 shadow-2xs transition-all hover:border-zinc-900 hover:bg-white hover:shadow-xs"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-teal-800">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-600">
                       {idea.track === "vision" ? "Vision" : "Idea"}
                       {idea.parentIdeaId && " • Pivot"}
                     </span>
                     <button
                       onClick={() => handleDelete(idea.id, idea.title)}
-                      className="text-slate-400 opacity-0 transition-opacity hover:text-rose-600 group-hover:opacity-100"
+                      className="text-zinc-400 opacity-0 transition-opacity hover:text-rose-600 group-hover:opacity-100"
                       aria-label={`Delete ${idea.title}`}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
 
-                  <h3 className="font-display mt-1.5 text-sm font-semibold text-slate-900">
+                  <h3 className="font-display mt-1.5 text-sm font-semibold text-zinc-950">
                     {idea.title}
                   </h3>
 
-                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">
+                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-zinc-600">
                     {idea.pitch}
                   </p>
 
-                  <div className="mt-3 flex items-center gap-1.5 text-[11px] text-slate-500">
-                    <span className="font-semibold text-slate-700">Target:</span>
+                  <div className="mt-3 flex items-center gap-1.5 text-[11px] text-zinc-500">
+                    <span className="font-semibold text-zinc-700">Target:</span>
                     <span className="truncate">{idea.targetCustomer}</span>
                   </div>
                 </div>
 
                 {/* Footer Controls */}
-                <div className="mt-4 flex items-center justify-between border-t border-slate-200/80 pt-3 text-xs">
+                <div className="mt-4 flex items-center justify-between border-t border-zinc-200/80 pt-3 text-xs">
                   {hasReport ? (
                     <Link
                       href={`/idea/${idea.id}/report`}
-                      className="inline-flex items-center gap-1 font-semibold text-teal-700 hover:underline"
+                      className="inline-flex items-center gap-1 font-semibold text-zinc-900 hover:underline"
                     >
                       <span>View Analysis</span>
                       <ArrowRight className="h-3 w-3" />
@@ -140,7 +140,7 @@ export default function WorkspaceView() {
                       handleStatusChange(idea.id, e.target.value as IdeaStatus)
                     }
                     aria-label={`Change stage for ${idea.title}`}
-                    className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 shadow-2xs focus:border-teal-700 focus:outline-none"
+                    className="rounded-lg border border-zinc-200 bg-white px-2 py-1 text-[11px] font-medium text-zinc-700 shadow-2xs focus:border-zinc-900 focus:outline-none"
                   >
                     <option value="under_review">Under Review</option>
                     <option value="active_pursuit">Active Pursuit</option>
@@ -157,7 +157,7 @@ export default function WorkspaceView() {
 
   if (!isLoaded) {
     return (
-      <div className="py-20 text-center text-sm text-slate-500">
+      <div className="py-20 text-center text-sm text-zinc-500">
         Loading workspace ideas...
       </div>
     );
@@ -168,19 +168,19 @@ export default function WorkspaceView() {
       {/* Search and Action Bar */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search ideas, targets, or keywords..."
-            className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:outline-none focus:ring-1 focus:ring-teal-700"
+            className="w-full rounded-xl border border-zinc-200 bg-white pl-10 pr-4 py-2.5 text-sm text-zinc-900 shadow-2xs placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
           />
         </div>
 
         <Link
           href="/idea/new"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-all hover:bg-teal-800"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition-all hover:bg-zinc-800"
         >
           <Plus className="h-4 w-4" />
           <span>New Startup Intake</span>
@@ -211,9 +211,9 @@ export default function WorkspaceView() {
           "Killed (Graveyard)",
           killed,
           "killed",
-          <Archive className="h-4 w-4 text-slate-500" aria-hidden="true" />,
-          "bg-slate-100 text-slate-700 border border-slate-200",
-          "text-slate-900"
+          <Archive className="h-4 w-4 text-zinc-500" aria-hidden="true" />,
+          "bg-zinc-100 text-zinc-700 border border-zinc-200",
+          "text-zinc-900"
         )}
       </div>
     </div>
