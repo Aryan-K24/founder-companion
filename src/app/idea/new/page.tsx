@@ -8,7 +8,7 @@ export default function NewIdeaPage() {
       <PageHeader
         eyebrow="Startup Intake"
         title="Stress-Test Your Startup Concept"
-        description="Submit your solution or problem hypothesis. Founder Companion searches active players, scours the failure graveyard, and returns a ruthless viability verdict."
+        description="Submit your product or problem hypothesis. Founder Companion analyzes active market incumbents, evaluates historical case studies, and delivers a rigorous strategic evaluation."
       />
 
       <div className="mt-8">

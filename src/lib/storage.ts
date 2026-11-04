@@ -90,8 +90,8 @@ export const SEED_IDEAS: StartupIdea[] = [
     updatedAt: new Date(Date.now() - 86400000 * 5).toISOString(),
     report: {
       verdict: "DEAD_ON_ARRIVAL",
-      verdictHeadline: "Zero retention, lethal CAC-to-LTV math, cemetery of 20+ identical corpses.",
-      executiveSummary: "B2C vertical social networks for pets suffer from the highest 30-day dropoff in consumer tech. Owners love their dogs, but human-to-human social graphs on Instagram and TikTok already satisfy this need with zero switching costs.",
+      verdictHeadline: "High customer acquisition costs with steep retention dropoff and past precedent of failures.",
+      executiveSummary: "B2C vertical social networks for pets suffer from severe 30-day dropoff. While pet owners are passionate, existing horizontal platforms (Instagram, TikTok) satisfy this desire with zero friction and existing social graphs.",
       dealbreakerFlags: [
         {
           flag: "Unit Economics Deficit",

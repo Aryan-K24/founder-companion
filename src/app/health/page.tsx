@@ -24,21 +24,21 @@ export default async function HealthPage() {
   const data = await getHealthCheck();
 
   return (
-    <Container>
+    <Container className="py-10">
       <PageHeader
-        eyebrow="System"
-        title="Health"
-        description="Confirms the app can reach an external API from a Server Component. Response below is fetched live on every load."
+        eyebrow="System Health"
+        title="Diagnostic Health Check"
+        description="Confirms the platform can establish live outbound network connectivity from a Server Component. Telemetry fetched live on request."
       />
 
-      <div className="my-10 rounded-xl border border-border bg-surface p-6">
-        <div className="mb-4 flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-accent" aria-hidden />
-          <p className="text-sm font-medium text-foreground">
-            Endpoint reachable
+      <div className="my-10 rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs">
+        <div className="mb-4 flex items-center gap-2.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-emerald-600 animate-pulse" aria-hidden />
+          <p className="text-sm font-semibold text-slate-900">
+            External API Gateway Reachable (HTTP 200 OK)
           </p>
         </div>
-        <pre className="overflow-x-auto rounded-lg bg-background p-4 text-sm leading-relaxed text-foreground">
+        <pre className="overflow-x-auto rounded-xl border border-slate-200 bg-slate-50/80 p-4 font-mono text-xs leading-relaxed text-slate-800">
           {JSON.stringify(data, null, 2)}
         </pre>
       </div>

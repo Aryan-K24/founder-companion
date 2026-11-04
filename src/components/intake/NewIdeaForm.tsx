@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IdeaTrack, StartupIdea } from "@/lib/types";
 import { saveIdea } from "@/lib/storage";
-import { Lightbulb, Compass, Loader2, AlertCircle, ArrowRight } from "lucide-react";
+import { Lightbulb, Compass, Loader2, AlertCircle, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export default function NewIdeaForm() {
   const router = useRouter();
@@ -37,7 +37,7 @@ export default function NewIdeaForm() {
     }
 
     setLoading(true);
-    setProgressStep("Initializing research engine & gathering web signals...");
+    setProgressStep("Gathering verified competitor signals and market data...");
 
     const id = "idea-" + Date.now();
     const newIdeaPayload: StartupIdea = {
@@ -56,17 +56,16 @@ export default function NewIdeaForm() {
     };
 
     try {
-      // Simulate live stage transitions for transparency and UX feedback
       const timer1 = setTimeout(() => {
-        setProgressStep("Searching active competitors & market incumbents...");
+        setProgressStep("Mapping active market incumbents in Global and Indian regions...");
       }, 1200);
 
       const timer2 = setTimeout(() => {
-        setProgressStep("Querying post-mortem archives for failed startups...");
+        setProgressStep("Cross-referencing historical post-mortems and case studies...");
       }, 2400);
 
       const timer3 = setTimeout(() => {
-        setProgressStep("Running investment committee stress-test & asymmetric wedge analysis...");
+        setProgressStep("Synthesizing strategic wedge, unit economics, and customer discovery...");
       }, 3800);
 
       const res = await fetch("/api/analyze", {
@@ -105,7 +104,7 @@ export default function NewIdeaForm() {
       <div
         role="tablist"
         aria-label="Select starting point"
-        className="mb-8 grid grid-cols-2 gap-3 rounded-xl border border-border bg-surface p-1.5"
+        className="mb-8 grid grid-cols-2 gap-3 rounded-2xl border border-slate-200/90 bg-white p-1.5 shadow-xs"
       >
         <button
           type="button"
@@ -113,10 +112,10 @@ export default function NewIdeaForm() {
           aria-selected={track === "idea"}
           aria-controls="track-panel"
           onClick={() => setTrack("idea")}
-          className={`flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all ${
             track === "idea"
-              ? "bg-accent text-accent-foreground shadow-sm"
-              : "text-muted hover:text-foreground"
+              ? "bg-teal-700 text-white shadow-2xs"
+              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
           }`}
         >
           <Lightbulb className="h-4 w-4" aria-hidden="true" />
@@ -129,10 +128,10 @@ export default function NewIdeaForm() {
           aria-selected={track === "vision"}
           aria-controls="track-panel"
           onClick={() => setTrack("vision")}
-          className={`flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-medium transition-all ${
+          className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all ${
             track === "vision"
-              ? "bg-accent text-accent-foreground shadow-sm"
-              : "text-muted hover:text-foreground"
+              ? "bg-teal-700 text-white shadow-2xs"
+              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
           }`}
         >
           <Compass className="h-4 w-4" aria-hidden="true" />
@@ -144,28 +143,28 @@ export default function NewIdeaForm() {
       <div
         id="track-panel"
         role="tabpanel"
-        className="rounded-2xl border border-border bg-surface p-6 sm:p-8"
+        className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs sm:p-9"
       >
-        <div className="mb-6">
-          <h2 className="font-display text-xl font-semibold text-foreground">
+        <div className="mb-7 pb-6 border-b border-slate-100">
+          <h2 className="font-display text-xl font-bold text-slate-900">
             {track === "idea"
-              ? "Pressure-test a concrete concept"
-              : "Explore an observed problem"}
+              ? "Stress-Test a Specific Product Concept"
+              : "Explore an Observed Industry Headache"}
           </h2>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-slate-600">
             {track === "idea"
-              ? "Provide the core details of what you plan to build. We will search the web to evaluate competitors and past failures."
-              : "Describe the pain point you care about. We will analyze why existing solutions fail and find viable business models."}
+              ? "Detail your product vision. We will cross-reference live competitors across Global and Indian markets, audit past post-mortems, and identify market entry wedges."
+              : "Describe the observed friction point. We will analyze why existing workarounds fall short and synthesize viable beachhead entry angles."}
           </p>
         </div>
 
         {error && (
           <div
             role="alert"
-            className="mb-6 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900"
+            className="mb-6 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs text-rose-900"
           >
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" aria-hidden="true" />
-            <p>{error}</p>
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" aria-hidden="true" />
+            <p className="font-medium">{error}</p>
           </div>
         )}
 
@@ -174,7 +173,7 @@ export default function NewIdeaForm() {
           <div>
             <label
               htmlFor="title"
-              className="block text-sm font-medium text-foreground"
+              className="block text-xs font-bold uppercase tracking-wider text-slate-700"
             >
               Working Title or Project Name *
             </label>
@@ -184,9 +183,9 @@ export default function NewIdeaForm() {
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. CreatorFlow, MicroClinic CRM, DogPals"
+              placeholder="e.g. Modern Cooler with Built-in Wheels, DogPals Community, CreatorFlow"
               disabled={loading}
-              className="mt-2 block w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
             />
           </div>
 
@@ -196,7 +195,7 @@ export default function NewIdeaForm() {
               <div>
                 <label
                   htmlFor="problemStatement"
-                  className="block text-sm font-medium text-foreground"
+                  className="block text-xs font-bold uppercase tracking-wider text-slate-700"
                 >
                   The Observed Headache *
                 </label>
@@ -209,16 +208,16 @@ export default function NewIdeaForm() {
                     setProblemStatement(e.target.value);
                     if (!pitch) setPitch(e.target.value);
                   }}
-                  placeholder="What is broken, frustratingly slow, or unfairly expensive right now?"
+                  placeholder="What is broken, frustratingly slow, or unnecessarily expensive today?"
                   disabled={loading}
-                  className="mt-2 block w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="whyNow"
-                  className="block text-sm font-medium text-foreground"
+                  className="block text-xs font-bold uppercase tracking-wider text-slate-700"
                 >
                   Why Now? What has changed?
                 </label>
@@ -227,9 +226,9 @@ export default function NewIdeaForm() {
                   type="text"
                   value={whyNow}
                   onChange={(e) => setWhyNow(e.target.value)}
-                  placeholder="e.g. New AI capabilities, new regulations, recent shift to remote work"
+                  placeholder="e.g. Advancements in roto-molded insulation, new regulatory shifts, remote work expansion"
                   disabled={loading}
-                  className="mt-2 block w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
                 />
               </div>
             </>
@@ -237,7 +236,7 @@ export default function NewIdeaForm() {
             <div>
               <label
                 htmlFor="pitch"
-                className="block text-sm font-medium text-foreground"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-700"
               >
                 The Pitch (One-liner) *
               </label>
@@ -247,52 +246,52 @@ export default function NewIdeaForm() {
                 rows={3}
                 value={pitch}
                 onChange={(e) => setPitch(e.target.value)}
-                placeholder="What does the product do in plain English, and what is the primary benefit?"
+                placeholder="What does the product do in plain English, and what is its primary benefit?"
                 disabled={loading}
-                className="mt-2 block w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
               />
             </div>
           )}
 
           {/* Target Customer */}
           <div>
-            <label
-              htmlFor="targetCustomer"
-              className="block text-sm font-medium text-foreground"
-            >
-              Target Customer (Who pays?) *
-            </label>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="targetCustomer"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-700"
+              >
+                Target Customer (Who buys?) *
+              </label>
+              <span className="text-[11px] text-slate-500 font-medium">Avoid generic answers like &ldquo;Everyone&rdquo;</span>
+            </div>
             <input
               id="targetCustomer"
               type="text"
               required
               value={targetCustomer}
               onChange={(e) => setTargetCustomer(e.target.value)}
-              placeholder="e.g. Solo video editors earning $4k+/mo, Not 'everyone'"
+              placeholder="e.g. Weekend campers carrying 20kg gear, Solo boutique design agencies"
               disabled={loading}
-              className="mt-2 block w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
             />
-            <p className="mt-1 text-xs text-muted">
-              Be as specific as possible. Broad audiences increase customer acquisition costs.
-            </p>
           </div>
 
           {/* Current Workaround */}
           <div>
             <label
               htmlFor="currentWorkaround"
-              className="block text-sm font-medium text-foreground"
+              className="block text-xs font-bold uppercase tracking-wider text-slate-700"
             >
-              Current Workaround (How do they solve this today?)
+              Current Workaround (How is it handled today?)
             </label>
             <input
               id="currentWorkaround"
               type="text"
               value={currentWorkaround}
               onChange={(e) => setCurrentWorkaround(e.target.value)}
-              placeholder="e.g. Disorganized Google Sheets, WhatsApp groups, manual email chains"
+              placeholder="e.g. Dragging heavy boxes, multiple trips with cheap bags, Excel sheets"
               disabled={loading}
-              className="mt-2 block w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
             />
           </div>
 
@@ -300,7 +299,7 @@ export default function NewIdeaForm() {
           <div>
             <label
               htmlFor="monetization"
-              className="block text-sm font-medium text-foreground"
+              className="block text-xs font-bold uppercase tracking-wider text-slate-700"
             >
               Planned Revenue Model
             </label>
@@ -309,9 +308,9 @@ export default function NewIdeaForm() {
               type="text"
               value={monetization}
               onChange={(e) => setMonetization(e.target.value)}
-              placeholder="e.g. $49/mo SaaS, 2% transaction fee, $200 one-time setup"
+              placeholder="e.g. Direct-to-consumer at $199 with 55% gross margin, $49/mo subscription"
               disabled={loading}
-              className="mt-2 block w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-teal-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-teal-700"
             />
           </div>
 
@@ -320,16 +319,16 @@ export default function NewIdeaForm() {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-accent-foreground shadow-sm transition-all hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-6 py-3.5 text-sm font-semibold text-white shadow-xs transition-all hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                  <span>Stress-Testing Concept...</span>
+                  <span>Analyzing Market Landscape...</span>
                 </>
               ) : (
                 <>
-                  <span>Run Pre-Seed Autopsy & Analysis</span>
+                  <span>Validate Concept & Run Intelligence Report</span>
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </>
               )}
@@ -340,10 +339,10 @@ export default function NewIdeaForm() {
           {loading && (
             <div
               aria-live="polite"
-              className="rounded-lg border border-accent/20 bg-accent-soft p-3.5 text-center text-xs font-medium text-accent"
+              className="rounded-xl border border-teal-200 bg-teal-50/80 p-4 text-center text-xs font-semibold text-teal-900 shadow-2xs"
             >
-              <div className="flex items-center justify-center gap-2">
-                <span className="h-2 w-2 animate-ping rounded-full bg-accent" />
+              <div className="flex items-center justify-center gap-2.5">
+                <span className="h-2 w-2 animate-ping rounded-full bg-teal-600" />
                 <span>{progressStep}</span>
               </div>
             </div>

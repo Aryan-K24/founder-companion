@@ -2,9 +2,9 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="mt-auto border-t border-border bg-surface py-8 text-center text-xs text-muted">
+    <footer className="mt-auto border-t border-slate-200/80 bg-white py-8 text-center text-xs text-slate-500">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row">
-        <p>© 2026 Founder Companion · Built by Aryan Kulkarni</p>
+        <p className="font-medium text-slate-600">© 2026 Founder Companion · Built by Aryan Kulkarni</p>
         <div>
           <a
             href="https://internship.flyrank.ai/verify?id=54445055-3088-4FF5-B87F-05376AC8D638&amp;first_name=Aryan"

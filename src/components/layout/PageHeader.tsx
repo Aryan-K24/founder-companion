@@ -8,9 +8,7 @@ type PageHeaderProps = {
 };
 
 /**
- * Consistent page-level heading used across every route: an optional
- * small eyebrow label, a title, a short description, and an optional
- * action slot on the right (e.g. a button) for larger screens.
+ * Consistent page-level heading used across every route.
  */
 export default function PageHeader({
   eyebrow,
@@ -19,18 +17,18 @@ export default function PageHeader({
   action,
 }: PageHeaderProps) {
   return (
-    <div className="flex flex-col gap-6 border-b border-border pb-8 pt-12 sm:flex-row sm:items-end sm:justify-between">
+    <div className="flex flex-col gap-6 border-b border-slate-200/80 pb-8 pt-8 sm:flex-row sm:items-end sm:justify-between">
       <div className="max-w-2xl">
         {eyebrow && (
-          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-accent">
+          <p className="mb-2 text-xs font-bold uppercase tracking-wider text-teal-800">
             {eyebrow}
           </p>
         )}
-        <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+        <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 sm:text-4xl">
           {title}
         </h1>
         {description && (
-          <p className="mt-3 text-[15px] leading-relaxed text-muted">
+          <p className="mt-3 text-sm sm:text-base leading-relaxed text-slate-600">
             {description}
           </p>
         )}
