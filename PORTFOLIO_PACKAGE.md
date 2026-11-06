@@ -14,7 +14,7 @@
 | **Live Production Application** | Deployed Next.js 16 app on Vercel | [https://founder-companion.vercel.app/](https://founder-companion.vercel.app/) |
 | **Source Code Repository** | Complete GitHub repository with clean git history | [https://github.com/Aryan-K24/founder-companion](https://github.com/Aryan-K24/founder-companion) |
 | **Project Documentation** | Production README with architecture, setup & env vars | [README.md](README.md) |
-| **Demo Video (FL-09)** | 3-5 minute live walkthrough & narration | *(Paste your unlisted YouTube / Loom link here)* |
+| **Demo Video (FL-09)** | 3-5 minute live walkthrough & narration | [https://www.loom.com/share/c47441a60dfe42f8992158a47bef017e](https://www.loom.com/share/c47441a60dfe42f8992158a47bef017e) |
 | **Video Script** | Click-by-click narration script with decision & limitation | [DEMO_VIDEO_SCRIPT.md](DEMO_VIDEO_SCRIPT.md) |
 | **Deployment Checklist (FE-11)** | Signed-off deployment hygiene & rollback plan | [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) |
 | **Automated Test Evidence** | 24 passing Vitest tests with >65% component coverage | [CAPSTONE_SUBMISSION.md](CAPSTONE_SUBMISSION.md) |

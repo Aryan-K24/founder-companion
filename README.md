@@ -9,7 +9,8 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16%20Turbopack-black)](https://nextjs.org)
 
 **Live Production URL:** [https://founder-companion.vercel.app/](https://founder-companion.vercel.app/)  
-**GitHub Repository:** [https://github.com/Aryan-K24/founder-companion](https://github.com/Aryan-K24/founder-companion)
+**GitHub Repository:** [https://github.com/Aryan-K24/founder-companion](https://github.com/Aryan-K24/founder-companion)  
+**Demo Video Walkthrough (FL-09):** [https://www.loom.com/share/c47441a60dfe42f8992158a47bef017e](https://www.loom.com/share/c47441a60dfe42f8992158a47bef017e)
 
 ---
 
